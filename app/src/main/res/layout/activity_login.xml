@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".LoginActivity">
 
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="384dp"
+        android:layout_height="190dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/header" />
+
     <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/last_connection_imageview"
         android:layout_width="75dp"
@@ -28,7 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="64dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/last_username_textview">
@@ -52,7 +62,7 @@
 
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/passzord_textinputlayout"
+        android:id="@+id/password_textinputlayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -83,29 +93,28 @@
         android:layout_marginTop="8dp"
         android:text="@string/username"
         android:textAlignment="center"
+        android:textColor="@android:color/background_light"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/last_connection_imageview" />
 
     <ImageView
         android:id="@+id/fingerprint_imageview"
-        android:layout_width="48dp"
+        android:layout_width="40dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="123dp"
+        android:layout_marginTop="100dp"
+        android:contentDescription="@string/fingerprint_image"
         android:src="@drawable/ic_fingerprint"
         app:layout_constraintBottom_toTopOf="@+id/use_finger_textview"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_button"
-        android:contentDescription="@string/fingerprint_image" />
+        app:layout_constraintTop_toBottomOf="@+id/login_button" />
 
     <TextView
         android:id="@+id/use_finger_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/use_your_fingerprint_to_unlock"
         android:textColor="@color/mainTextColor"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -123,7 +132,9 @@
         android:text="@string/login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/passzord_textinputlayout"
+        app:layout_constraintTop_toBottomOf="@+id/password_textinputlayout"
         style="@style/PrimaryColoredButton"/>
+
+
 
 </android.support.constraint.ConstraintLayout>
