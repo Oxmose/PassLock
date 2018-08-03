@@ -13,6 +13,12 @@ public interface UserDAO {
     @Insert
     void insertAll(User... users);
 
+    @Insert
+    void insert(User user);
+
     @Delete
     void delete(User user);
+
+    @Query("SELECT * FROM user WHERE is_principal = 1")
+    User getPrincipalUser();
 }

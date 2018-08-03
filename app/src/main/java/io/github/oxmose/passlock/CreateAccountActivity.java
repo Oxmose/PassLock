@@ -17,9 +17,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
 import io.github.oxmose.passlock.database.DatabaseSingleton;
+import io.github.oxmose.passlock.database.User;
 
 
 public class CreateAccountActivity extends Activity {
@@ -32,6 +35,16 @@ public class CreateAccountActivity extends Activity {
     private Toast infoToast = null;
     private String avatarFileName = "";
 
+    private EditText usernameEditText;
+    private EditText passwordEditText;
+    private EditText passwordConfEditText;
+
+    private CheckBox fingerprintsCheckBox;
+
+    private Button saveButton;
+    private Button cancelButton;
+    private Button addAvatarButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,17 +53,17 @@ public class CreateAccountActivity extends Activity {
 
 
         /* Get activity components */
-        final EditText usernameEditText = findViewById(R.id.activity_create_account_username_edittext);
-        final EditText passwordEditText = findViewById(R.id.activity_create_account_password_edittext);
-        final EditText passwordConfEditText =
+        usernameEditText = findViewById(R.id.activity_create_account_username_edittext);
+        passwordEditText = findViewById(R.id.activity_create_account_password_edittext);
+        passwordConfEditText =
                             findViewById(R.id.activity_create_account_password_confirm_edittext);
 
-        CheckBox fingerprintsCheckBox =
+        fingerprintsCheckBox =
                          findViewById(R.id.activity_create_account_fingerprints_enable_checkbox);
 
-        Button saveButton = findViewById(R.id.activity_create_account_save_button);
-        Button cancelButton = findViewById(R.id.activity_create_account_cancel_button);
-        Button addAvatarButton = findViewById(R.id.activity_create_account__add_avatar_button);
+        saveButton = findViewById(R.id.activity_create_account_save_button);
+        cancelButton = findViewById(R.id.activity_create_account_cancel_button);
+        addAvatarButton = findViewById(R.id.activity_create_account__add_avatar_button);
 
         /* Set components */
         cancelButton.setOnClickListener(new View.OnClickListener() {
@@ -66,11 +79,11 @@ public class CreateAccountActivity extends Activity {
 
                 /* Check status */
                 if(b) {
-                    /* Get the settings */
-                    Settings settings = Settings.getInstance();
+                    /* Get the database singleton */
+                    DatabaseSingleton db = DatabaseSingleton.getInstance();
 
                     /* Check if an account is already registered with fingerprints */
-                    if(settings.getFingerprintAccountSet()) {
+                    if(db.isFingerprintAccountSet()) {
                         if(infoToast != null) {
                             infoToast.cancel();
                         }
@@ -78,6 +91,8 @@ public class CreateAccountActivity extends Activity {
                                 "Cannot unlock this account with fingerprints: an account is already set to be unlocked with fingerprints",
                                 Toast.LENGTH_LONG);
                         infoToast.show();
+
+                        fingerprintsCheckBox.setChecked(false);
                     }
                     else {
                         if(infoToast != null) {
@@ -137,6 +152,28 @@ public class CreateAccountActivity extends Activity {
                     passwordEditText.setError(null);
                     passwordConfEditText.setError(null);
                 }
+
+                /* Everything went well, save the user to the database */
+                if(saveUser()) {
+                    if(infoToast != null) {
+                        infoToast.cancel();
+                    }
+                    infoToast = Toast.makeText(CreateAccountActivity.this,
+                            "User saved",
+                            Toast.LENGTH_LONG);
+                    infoToast.show();
+
+                    finish();
+                }
+                else {
+                    if(infoToast != null) {
+                        infoToast.cancel();
+                    }
+                    infoToast = Toast.makeText(CreateAccountActivity.this,
+                            "Cannot save user, unknown error",
+                            Toast.LENGTH_LONG);
+                    infoToast.show();
+                }
             }
         });
     }
@@ -165,8 +202,9 @@ public class CreateAccountActivity extends Activity {
                         file.delete();
                     }
                 }
-
                 avatarFileName = newFile;
+
+                Toast.makeText(CreateAccountActivity.this, "Avatar saved", Toast.LENGTH_LONG).show();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 Toast.makeText(CreateAccountActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
@@ -200,5 +238,41 @@ public class CreateAccountActivity extends Activity {
             e.printStackTrace();
         }
         return fname;
+    }
+
+    private boolean saveUser() {
+        /* Get the database singleton */
+        DatabaseSingleton db = DatabaseSingleton.getInstance();
+
+        String usernameText = usernameEditText.getText().toString();
+        String passwordText = passwordEditText.getText().toString();
+
+        /* Hash password */
+        passwordText = hashPassword(passwordText);
+        if(passwordText.isEmpty()) {
+            return false;
+        }
+
+        User newUser = new User(usernameText, passwordText, fingerprintsCheckBox.isChecked());
+
+        db.createUser(newUser);
+
+        return true;
+    }
+
+    private String hashPassword(String passwordText) {
+        MessageDigest md = null;
+        try {
+            md = MessageDigest.getInstance("SHA-512");
+            byte[] digest = md.digest(passwordText.getBytes());
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < digest.length; i++) {
+                sb.append(Integer.toString((digest[i] & 0xff) + 0x100, 16).substring(1));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }
