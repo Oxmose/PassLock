@@ -20,7 +20,7 @@ public class DatabaseSingleton {
     private DatabaseSingleton() {
         /* Get the instance of the database */
         db = Room.databaseBuilder(ApplicationContextProvider.getContext(),
-                AppDatabase.class, "PassLockDB").build();
+                AppDatabase.class, "PassLockDB").fallbackToDestructiveMigration().build();
     }
 
     public boolean usernameExists(String usernameText) {
@@ -59,6 +59,18 @@ public class DatabaseSingleton {
         } catch (ExecutionException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public User getUser(String username, String password) {
+        try {
+            return (new UserLoginAsync(username, password, db).execute().get());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return null;
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -103,6 +115,30 @@ public class DatabaseSingleton {
         @Override
         protected Boolean doInBackground(Void... params) {
             return (db.userDAO().getPrincipalUser() != null);
+        }
+    }
+
+    private static class UserLoginAsync extends AsyncTask<Void, Void, User> {
+        private String username;
+        private String password;
+        private AppDatabase db;
+
+        public UserLoginAsync(String username, String password, AppDatabase db) {
+            this.username = username;
+            this.password = password;
+            this.db = db;
+        }
+
+        @Override
+        protected User doInBackground(Void... params) {
+            User user = db.userDAO().findByUsername(username);
+            if(user == null)
+                return null;
+
+            if(user.getPassword().equals(password))
+                return user;
+
+            return null;
         }
     }
 }

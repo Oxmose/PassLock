@@ -5,8 +5,6 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
-import javax.annotation.Nonnull;
-
 @Entity
 public class User {
 
@@ -20,10 +18,15 @@ public class User {
     @ColumnInfo(name = "is_principal")
     private boolean isPrincipal;
 
-    public User(@NonNull String usernameText, String passwordText, boolean isPrincipal) {
+    @ColumnInfo(name = "avatar")
+    private String avatar;
+
+    public User(@NonNull String usernameText, String passwordText,
+                boolean isPrincipal, String avatar) {
         this.username = usernameText;
         this.password = passwordText;
         this.isPrincipal = isPrincipal;
+        this.avatar = avatar;
     }
 
     public User() {}
@@ -41,6 +44,10 @@ public class User {
         return password;
     }
 
+    public String getAvatar() {
+        return avatar;
+    }
+
     public void setUsername(@NonNull String username) {
         this.username = username;
     }
@@ -52,4 +59,10 @@ public class User {
     public void setPrincipal(boolean principal) {
         isPrincipal = principal;
     }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+
 }

@@ -190,21 +190,21 @@ public class CreateAccountActivity extends Activity {
                 final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
 
                 /* Save the image */
-
                 String newFile = saveImage(selectedImage);
+                String root = getFilesDir().toString();
 
                 /* If we have a new image and an other one was already chosen, delete it */
                 if(!newFile.isEmpty() && !avatarFileName.isEmpty()) {
-                    String root = getFilesDir().toString();
+
                     File myDir = new File(root + "/" + AVATAR_FOLDER);
                     File file = new File(myDir, avatarFileName);
                     if(file.exists()) {
                         file.delete();
                     }
                 }
-                avatarFileName = newFile;
+                avatarFileName = root + "/" + AVATAR_FOLDER + "/" + newFile;
 
-                Toast.makeText(CreateAccountActivity.this, "Avatar saved", Toast.LENGTH_LONG).show();
+                Toast.makeText(CreateAccountActivity.this, "Avatar saved", Toast.LENGTH_SHORT).show();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 Toast.makeText(CreateAccountActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
@@ -248,31 +248,18 @@ public class CreateAccountActivity extends Activity {
         String passwordText = passwordEditText.getText().toString();
 
         /* Hash password */
-        passwordText = hashPassword(passwordText);
+        passwordText = Tools.hashPassword(passwordText);
         if(passwordText.isEmpty()) {
             return false;
         }
 
-        User newUser = new User(usernameText, passwordText, fingerprintsCheckBox.isChecked());
+        User newUser = new User(usernameText, passwordText, fingerprintsCheckBox.isChecked(),
+                                avatarFileName);
 
         db.createUser(newUser);
 
         return true;
     }
 
-    private String hashPassword(String passwordText) {
-        MessageDigest md = null;
-        try {
-            md = MessageDigest.getInstance("SHA-512");
-            byte[] digest = md.digest(passwordText.getBytes());
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < digest.length; i++) {
-                sb.append(Integer.toString((digest[i] & 0xff) + 0x100, 16).substring(1));
-            }
-            return sb.toString();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
+
 }

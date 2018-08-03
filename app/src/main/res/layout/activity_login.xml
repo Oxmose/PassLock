@@ -52,7 +52,7 @@
             android:ems="10"
             android:hint="@string/username"
             android:inputType="textEmailAddress"
-            android:textColor="#FFF"
+            android:textColor="@color/mainTextColor"
             android:textColorHint="#999"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -82,7 +82,7 @@
             android:ems="10"
             android:hint="@string/password"
             android:inputType="textPassword"
-            android:textColor="#FFF"
+            android:textColor="@color/mainTextColor"
             android:textColorHint="#999" />
     </android.support.design.widget.TextInputLayout>
 

@@ -37,7 +37,15 @@ public class Settings {
         return reader.getString("lastConnectionImage", "");
     }
 
-    public boolean getFingerprintAccountSet() {
-        return reader.getBoolean("fingerprintAccountSet", false);
+    public void setLastConnectionUsername(String lastConnectionUsername) {
+        writer.putString("lastConnectionUsername", lastConnectionUsername).commit();
+    }
+
+    public void setLastConnectionImage(String lastConnectionImage) {
+        writer.putString("lastConnectionImage", lastConnectionImage).commit();
+    }
+
+    public void setLastConnectionExists(boolean lastConnectionExists) {
+        writer.putBoolean("lastConnectionExists", lastConnectionExists).commit();
     }
 }
