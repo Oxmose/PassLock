@@ -32,6 +32,12 @@ public class Settings {
         return reader.getBoolean("lastConnectionExists", false);
     }
 
+    public String getLastConnectionUsername() {
+        return reader.getString("lastConnectionUsername", "");
+    }
 
+    public String getLastConnectionImage() {
+        return reader.getString("lastConnectionImage", "");
+    }
 
 }
