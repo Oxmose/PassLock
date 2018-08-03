@@ -26,9 +26,6 @@ public class Settings {
     }
 
     public boolean getLastConnectionExists() {
-        Log.i("SharedPreference",
-              "lastConnectionExists: " +
-                      reader.getBoolean("lastConnectionExists", false));
         return reader.getBoolean("lastConnectionExists", false);
     }
 
@@ -40,4 +37,7 @@ public class Settings {
         return reader.getString("lastConnectionImage", "");
     }
 
+    public boolean getFingerprintAccountSet() {
+        return reader.getBoolean("fingerprintAccountSet", false);
+    }
 }
