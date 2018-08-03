@@ -1,8 +1,8 @@
 package io.github.oxmose.passlock;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -21,13 +21,16 @@ public class LoginActivity extends AppCompatActivity {
 
         /* Set the UI depending on the settings */
         setUI();
+
+        /* Init the components */
+        initComponents();
     }
 
     private void setUI() {
 
         /* Get components */
-        CircularImageView lastUserIconImageView = findViewById(R.id.last_connection_imageview);
-        TextView lastUsernameTextView = findViewById(R.id.last_username_textview);
+        CircularImageView lastUserIconImageView = findViewById(R.id.activity_login_last_connection_imageview);
+        TextView lastUsernameTextView = findViewById(R.id.activity_login_last_username_textview);
 
         /* Get the settings singleton */
         Settings settings = Settings.getInstance();
@@ -70,5 +73,19 @@ public class LoginActivity extends AppCompatActivity {
             lastUserIconImageView.setVisibility(View.INVISIBLE);
             lastUsernameTextView.setVisibility(View.INVISIBLE);
         }
+    }
+
+    private void initComponents() {
+        /* Get components */
+        TextView createAccountTextView = findViewById(R.id.activity_login_create_accountt_textview);
+
+        /* Set components */
+        createAccountTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), CreateAccountActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }

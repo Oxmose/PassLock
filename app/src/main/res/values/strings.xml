@@ -8,4 +8,12 @@
     <string name="password">Password</string>
     <string name="login">Login</string>
     <string name="fingerprint_image">fingerprint_image</string>
+    <string name="remember_me">Remember me</string>
+    <string name="u_create_account_u"><u>Create account</u></string>
+    <string name="title_activity_create_account">Create a new account</string>
+    <string name="confirm_parssword">Confirm password</string>
+    <string name="use_fingerprints_to_unlock_this_account">Use fingerprints to unlock this account</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="add_avatar_optional">Add avatar (optional)</string>
 </resources>
