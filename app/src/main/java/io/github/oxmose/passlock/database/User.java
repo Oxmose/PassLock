@@ -21,6 +21,8 @@ public class User {
     @ColumnInfo(name = "avatar")
     private String avatar;
 
+    private String decryptionKey;
+
     public User(@NonNull String usernameText, String passwordText,
                 boolean isPrincipal, String avatar) {
         this.username = usernameText;
@@ -65,4 +67,11 @@ public class User {
     }
 
 
+    public String getDecryptionKey() {
+        return decryptionKey;
+    }
+
+    public void setDecryptionKey(String decryptionKey) {
+        this.decryptionKey = decryptionKey;
+    }
 }

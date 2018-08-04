@@ -84,6 +84,16 @@ public class DatabaseSingleton {
         }
     }
 
+    public void deleteUser(User newUser) {
+        try {
+            new DeleteUserAsync(newUser, db).execute().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+
     private static class GetUserAsync extends AsyncTask<Void, Void, User> {
         private String username;
         private AppDatabase db;
@@ -161,6 +171,22 @@ public class DatabaseSingleton {
             if(user.getPassword().equals(password))
                 return user;
 
+            return null;
+        }
+    }
+
+    private static class DeleteUserAsync extends AsyncTask<Void, Void, Void> {
+        private User user;
+        private AppDatabase db;
+
+        public DeleteUserAsync(User newUser, AppDatabase db) {
+            this.user = newUser;
+            this.db = db;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            db.userDAO().delete(user);
             return null;
         }
     }

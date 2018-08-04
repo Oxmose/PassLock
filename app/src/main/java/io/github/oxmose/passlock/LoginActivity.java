@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
+import android.os.CancellationSignal;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyPermanentlyInvalidatedException;
 import android.security.keystore.KeyProperties;
@@ -47,14 +48,9 @@ import io.github.oxmose.passlock.database.User;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private static final String KEY_NAME = "PassLockFingerPrintKey";
-    private Cipher cipher;
-    private KeyStore keyStore;
-    private KeyGenerator keyGenerator;
-    private FingerprintManager.CryptoObject cryptoObject;
-    private FingerprintManager fingerprintManager;
-    private KeyguardManager keyguardManager;
-    private FingerprintHandler fingerprintHandler;
+    private FingerPrintAuthHelper fingerPrintAuthHelper;
+    private CancellationSignal cancellationSignal;
+    private Toast infoToast = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,156 +58,43 @@ public class LoginActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_login);
 
+
         /* TODO REMOVE FOR DEV PURPOSE ONLY */
-        User loggedUser = checkLogin("oxmose", "oxmose");
-        if(loggedUser != null) {
+
+        //User loggedUser = checkLogin("oxmose", "oxmose");
+       // if(loggedUser != null) {
             /* We logged in */
+            /*
             Intent i = new Intent(LoginActivity.this, MainActivity.class);
             i.putExtra("username", loggedUser.getUsername());
+            i.putExtra("decryptionKey", loggedUser.getDecryptionKey());
             startActivity(i);
-        }
-
-        /* Init fingerprint technology */
-        initFingerPrints();
+            */
+      //  }
 
         /* Set the UI depending on the settings */
         setUI();
 
         /* Init the components */
         initComponents();
+
+        /* Init fingerprint technology */
+        fingerPrintAuthHelper = new FingerPrintAuthHelper(this,
+                (TextView)findViewById(R.id.activity_login_use_finger_textview));
+        initFingerPrints();
+
     }
 
     private void initFingerPrints() {
-        TextView fingerPrintInfo = findViewById(R.id.activity_login_use_finger_textview);
+        if(cancellationSignal != null && !cancellationSignal.isCanceled())
+            cancellationSignal.cancel();
+        cancellationSignal = null;
+        cancellationSignal = new CancellationSignal();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            //Get an instance of KeyguardManager and FingerprintManager//
-            keyguardManager =
-                    (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
-            fingerprintManager =
-                    (FingerprintManager) getSystemService(FINGERPRINT_SERVICE);
-
-            //Check whether the device has a fingerprint sensor//
-            if (!fingerprintManager.isHardwareDetected()) {
-                fingerPrintInfo.setText(getString(R.string.fingerprint_not_supported));
-            }
-            //Check whether the user has granted your app the USE_FINGERPRINT permission//
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
-                fingerPrintInfo.setText(R.string.enable_fingerprint);
-            }
-
-            //Check that the user has registered at least one fingerprint//
-            if (!fingerprintManager.hasEnrolledFingerprints()) {
-                fingerPrintInfo.setText(R.string.register_fingerprints);
-            }
-
-            //Check that the lockscreen is secured//
-            if (!keyguardManager.isKeyguardSecure()) {
-                fingerPrintInfo.setText(R.string.enable_lockscreen);
-            } else {
-                try {
-                    generateKey();
-                } catch (FingerprintException e) {
-                    e.printStackTrace();
-                }
-
-                if (initCipher()) {
-                    //If the cipher is initialized successfully, then create a CryptoObject instance//
-                    cryptoObject = new FingerprintManager.CryptoObject(cipher);
-
-                    fingerprintHandler = new FingerprintHandler(this);
-                    fingerprintHandler.startAuth(fingerprintManager, cryptoObject);
-                }
-                else {
-                    fingerPrintInfo.setText(getResources().getString(R.string.fingerprint_not_supported));
-                }
-            }
-        }
-        else {
-            fingerPrintInfo.setText(getResources().getString(R.string.fingerprint_not_supported));
-        }
-    }
-
-    private void generateKey() throws FingerprintException {
-        try {
-            // Obtain a reference to the Keystore using the standard Android keystore container identifier (“AndroidKeystore”)//
-            keyStore = KeyStore.getInstance("AndroidKeyStore");
-
-            //Generate the key//
-            keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore");
-
-            //Initialize an empty KeyStore//
-            keyStore.load(null);
-
-            //Initialize the KeyGenerator//
+        if(fingerPrintAuthHelper.init()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                keyGenerator.init(new
-
-                        //Specify the operation(s) this key can be used for//
-                        KeyGenParameterSpec.Builder(KEY_NAME,
-                        KeyProperties.PURPOSE_ENCRYPT |
-                                KeyProperties.PURPOSE_DECRYPT)
-                        .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
-
-                        //Configure this key so that the user has to confirm their identity with a fingerprint each time they want to use it//
-                        .setUserAuthenticationRequired(true)
-                        .setEncryptionPaddings(
-                                KeyProperties.ENCRYPTION_PADDING_PKCS7)
-                        .build());
+                fingerPrintAuthHelper.getPassword(cancellationSignal, new LoginCallback());
             }
-
-            //Generate the key//
-            keyGenerator.generateKey();
-
-        } catch (KeyStoreException
-                | NoSuchAlgorithmException
-                | NoSuchProviderException
-                | InvalidAlgorithmParameterException
-                | CertificateException
-                | IOException exc) {
-            exc.printStackTrace();
-            throw new FingerprintException(exc);
-        }
-    }
-
-    //Create a new method that we’ll use to initialize our cipher//
-    public boolean initCipher() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            try {
-                //Obtain a cipher instance and configure it with the properties required for fingerprint authentication//
-                cipher = Cipher.getInstance(
-                        KeyProperties.KEY_ALGORITHM_AES + "/"
-                                + KeyProperties.BLOCK_MODE_CBC + "/"
-                                + KeyProperties.ENCRYPTION_PADDING_PKCS7);
-            } catch (NoSuchAlgorithmException |
-                    NoSuchPaddingException e) {
-                Log.e("Cipher Failed", e.toString());
-                return false;
-            }
-
-            try {
-                keyStore.load(null);
-                SecretKey key = (SecretKey) keyStore.getKey(KEY_NAME,
-                        null);
-                cipher.init(Cipher.ENCRYPT_MODE, key);
-                //Return true if the cipher has been initialized successfully//
-                return true;
-            } catch (KeyStoreException | CertificateException
-                    | UnrecoverableKeyException | IOException
-                    | NoSuchAlgorithmException | InvalidKeyException e) {
-                Log.e("Cipher Failed", e.toString());
-                e.printStackTrace();
-                return false;
-            }
-        }
-        else {
-            return false;
-        }
-    }
-
-    private class FingerprintException extends Exception {
-        public FingerprintException(Exception e) {
-            super(e);
         }
     }
 
@@ -306,6 +189,9 @@ public class LoginActivity extends AppCompatActivity {
                     usernameEditText.setError(null);
                     passwordEditText.setError(null);
 
+                    /* Set decryption key */
+                    loggedUser.setDecryptionKey(passwordEditText.getText().toString());
+
                     /* Get the settings singleton */
                     Settings settings = Settings.getInstance();
 
@@ -324,6 +210,7 @@ public class LoginActivity extends AppCompatActivity {
                     /* We logged in */
                     Intent i = new Intent(LoginActivity.this, MainActivity.class);
                     i.putExtra("username", loggedUser.getUsername());
+                    i.putExtra("decryptionKey", loggedUser.getDecryptionKey());
                     startActivity(i);
 
                     finish();
@@ -372,47 +259,90 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    public void fingerPrintLogin() {
-        /* Get the database singleton */
-        DatabaseSingleton db = DatabaseSingleton.getInstance();
+    public class LoginCallback implements FingerPrintAuthHelper.Callback {
 
-        EditText usernameEditText = findViewById(R.id.activity_login_username_edittext);
-        EditText passwordEditText = findViewById(R.id.activity_login_password_edittext);
+        @Override
+        public void onSuccess(String savedPass) {
+            /* Get the database singleton */
+            DatabaseSingleton db = DatabaseSingleton.getInstance();
 
-        /* Check the principal user */
-        User loggedUser = db.getPincipalUser();
-        if(loggedUser != null){
-            usernameEditText.setError(null);
-            passwordEditText.setError(null);
+            EditText usernameEditText = findViewById(R.id.activity_login_username_edittext);
+            EditText passwordEditText = findViewById(R.id.activity_login_password_edittext);
 
-            /* We logged in */
-            Intent i = new Intent(LoginActivity.this, MainActivity.class);
-            i.putExtra("username", loggedUser.getUsername());
-            startActivity(i);
-            finish();
+            /* Check the principal user */
+            User loggedUser = db.getPincipalUser();
+            if(loggedUser != null){
+                usernameEditText.setError(null);
+                passwordEditText.setError(null);
+
+                loggedUser.setDecryptionKey(savedPass);
+
+                /* We logged in */
+                Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                i.putExtra("username", loggedUser.getUsername());
+                i.putExtra("decryptionKey", loggedUser.getDecryptionKey());
+                startActivity(i);
+                finish();
+            }
+            else {
+                if(infoToast != null)
+                    infoToast.cancel();
+
+                infoToast = Toast.makeText(LoginActivity.this, getString(R.string.not_any_fingerprint_account),
+                               Toast.LENGTH_SHORT);
+                infoToast.show();
+
+                /* Cancel fingerprint auth */
+                if(cancellationSignal != null)
+                    cancellationSignal.cancel();
+
+                initFingerPrints();
+            }
         }
-        else {
-            Toast.makeText(this, R.string.not_any_fingerprint_account, Toast.LENGTH_SHORT).show();
-            fingerprintHandler.cancelListening();
-            initFingerPrints();
+
+        @Override
+        public void onFailure(String message) {
+            if(infoToast != null)
+                infoToast.cancel();
+
+            infoToast = Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT);
+            infoToast.show();
+        }
+
+        @Override
+        public void onHelp(int helpCode, String helpString) {
+            if(infoToast != null)
+                infoToast.cancel();
+
+            infoToast = Toast.makeText(LoginActivity.this, helpString, Toast.LENGTH_SHORT);
+            infoToast.show();
         }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        fingerprintHandler.cancelListening();
+        /* Cancel fingerprint auth */
+        if(cancellationSignal != null)
+            cancellationSignal.cancel();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        fingerprintHandler.cancelListening();
+        /* Cancel fingerprint auth */
+        if(cancellationSignal != null)
+            cancellationSignal.cancel();
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
+
+        /* Cancel fingerprint auth */
+        if(cancellationSignal != null)
+            cancellationSignal.cancel();
+
         /* Init fingerprint technology */
         initFingerPrints();
 

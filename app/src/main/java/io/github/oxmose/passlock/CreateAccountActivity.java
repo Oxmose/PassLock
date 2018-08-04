@@ -1,16 +1,20 @@
 package io.github.oxmose.passlock;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.app.Activity;
+import android.os.CancellationSignal;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -43,12 +47,59 @@ public class CreateAccountActivity extends Activity {
     private Button cancelButton;
     private Button addAvatarButton;
 
+    private CancellationSignal cancellationSignal;
+    private FingerPrintAuthHelper fingerPrintAuthHelper;
+
+    private User newUser;
+    private AlertDialog fingerInfoDialog;
+
+    private void initFingerPrints() {
+        if(cancellationSignal != null && !cancellationSignal.isCanceled())
+            cancellationSignal.cancel();
+        cancellationSignal = null;
+        cancellationSignal = new CancellationSignal();
+
+        if(fingerPrintAuthHelper.init()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                fingerPrintAuthHelper.savePassword(passwordEditText.getText().toString(),
+                        cancellationSignal,
+                        new CreateAccountActivity.FingerPrintCallback());
+            }
+        }
+        else {
+            fingerprintsCheckBox.setChecked(false);
+            fingerprintsCheckBox.setEnabled(false);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        /* Cancel fingerprint auth */
+        if(cancellationSignal != null)
+            cancellationSignal.cancel();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        /* Cancel fingerprint auth */
+        if(cancellationSignal != null)
+            cancellationSignal.cancel();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
 
-
+        /* Init fingerprint technology */
+        fingerPrintAuthHelper = new FingerPrintAuthHelper(this,
+                (TextView)findViewById(R.id.activity_login_use_finger_textview));
+        if(!fingerPrintAuthHelper.init()) {
+            fingerprintsCheckBox.setChecked(false);
+            fingerprintsCheckBox.setEnabled(false);
+        }
 
         /* Get activity components */
         usernameEditText = findViewById(R.id.activity_create_account_username_edittext);
@@ -153,15 +204,25 @@ public class CreateAccountActivity extends Activity {
 
                 /* Everything went well, save the user to the database */
                 if(saveUser()) {
-                    if(infoToast != null) {
-                        infoToast.cancel();
+                    if(fingerprintsCheckBox.isChecked()) {
+                        fingerInfoDialog = new AlertDialog.Builder(CreateAccountActivity.this)
+                                .setMessage("Please scan you fingerprints")
+                                .create();
+                        fingerInfoDialog.setCancelable(false);
+                        fingerInfoDialog.show();
+                        initFingerPrints();
                     }
-                    infoToast = Toast.makeText(CreateAccountActivity.this,
-                            "User saved",
-                            Toast.LENGTH_LONG);
-                    infoToast.show();
+                    else {
+                        if(infoToast != null) {
+                            infoToast.cancel();
+                        }
+                        infoToast = Toast.makeText(CreateAccountActivity.this,
+                                "User saved",
+                                Toast.LENGTH_LONG);
+                        infoToast.show();
 
-                    finish();
+                        finish();
+                    }
                 }
                 else {
                     if(infoToast != null) {
@@ -251,7 +312,7 @@ public class CreateAccountActivity extends Activity {
             return false;
         }
 
-        User newUser = new User(usernameText, passwordText, fingerprintsCheckBox.isChecked(),
+        newUser = new User(usernameText, passwordText, fingerprintsCheckBox.isChecked(),
                                 avatarFileName);
 
         db.createUser(newUser);
@@ -259,7 +320,48 @@ public class CreateAccountActivity extends Activity {
         return true;
     }
 
+    public class FingerPrintCallback implements FingerPrintAuthHelper.Callback {
 
+        @Override
+        public void onSuccess(String savedPass) {
+            fingerInfoDialog.hide();
+            if(infoToast != null) {
+                infoToast.cancel();
+            }
+            infoToast = Toast.makeText(CreateAccountActivity.this,
+                    "User saved",
+                    Toast.LENGTH_LONG);
+            infoToast.show();
 
+            finish();
+        }
 
+        @Override
+        public void onFailure(String message) {
+            fingerInfoDialog.hide();
+            if(infoToast != null) {
+                infoToast.cancel();
+            }
+            infoToast = Toast.makeText(CreateAccountActivity.this,
+                    "Cannot save user " + message,
+                    Toast.LENGTH_LONG);
+            infoToast.show();
+
+            /* Get the database singleton */
+            DatabaseSingleton db = DatabaseSingleton.getInstance();
+            db.deleteUser(newUser);
+        }
+
+        @Override
+        public void onHelp(int helpCode, String helpString) {
+            fingerInfoDialog.hide();
+            if(infoToast != null) {
+                infoToast.cancel();
+            }
+            infoToast = Toast.makeText(CreateAccountActivity.this,
+                    helpString,
+                    Toast.LENGTH_LONG);
+            infoToast.show();
+        }
+    }
 }
