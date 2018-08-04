@@ -20,6 +20,7 @@ import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.io.File;
 
+import io.github.oxmose.passlock.data.Session;
 import io.github.oxmose.passlock.database.DatabaseSingleton;
 import io.github.oxmose.passlock.database.User;
 
@@ -157,6 +158,8 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_search) {
+            // Handle the camera action
+        } else if (id == R.id.nav_add) {
             // Handle the camera action
         } else if (id == R.id.nav_passwords) {
 

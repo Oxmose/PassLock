@@ -1,13 +1,13 @@
-package io.github.oxmose.passlock;
+package io.github.oxmose.passlock.data;
 
 import io.github.oxmose.passlock.database.User;
 
-class Session {
+public class Session {
     private static final Session instance = new Session();
 
     private User currentUser;
 
-    static Session getInstance() {
+    static public Session getInstance() {
         return instance;
     }
 

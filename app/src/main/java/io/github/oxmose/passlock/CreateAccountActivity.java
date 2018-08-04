@@ -23,6 +23,8 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.Random;
 
+import io.github.oxmose.passlock.tools.FingerPrintAuthHelper;
+import io.github.oxmose.passlock.tools.Tools;
 import io.github.oxmose.passlock.database.DatabaseSingleton;
 import io.github.oxmose.passlock.database.User;
 

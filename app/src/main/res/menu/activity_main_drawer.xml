@@ -8,6 +8,10 @@
             android:id="@+id/nav_search"
             android:icon="@drawable/ic_search"
             android:title="Search" />
+        <item
+            android:id="@+id/nav_add"
+            android:icon="@drawable/ic_add_circle_outline"
+            android:title="Add a password" />
     </group>
 
     <group android:checkableBehavior="none" android:id="@+id/menu_middle">

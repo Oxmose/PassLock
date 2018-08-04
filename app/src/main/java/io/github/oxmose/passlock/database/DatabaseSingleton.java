@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 
 import java.util.concurrent.ExecutionException;
 
-import io.github.oxmose.passlock.ApplicationContextProvider;
+import io.github.oxmose.passlock.tools.ApplicationContextProvider;
 
 public class DatabaseSingleton {
     private static final DatabaseSingleton instance = new DatabaseSingleton();

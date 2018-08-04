@@ -1,4 +1,4 @@
-package io.github.oxmose.passlock;
+package io.github.oxmose.passlock.tools;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

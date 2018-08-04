@@ -1,4 +1,4 @@
-package io.github.oxmose.passlock;
+package io.github.oxmose.passlock.tools;
 
 import android.app.Application;
 import android.content.Context;

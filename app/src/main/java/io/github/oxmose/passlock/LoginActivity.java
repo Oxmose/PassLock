@@ -1,6 +1,5 @@
 package io.github.oxmose.passlock;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -20,6 +19,9 @@ import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.io.File;
 
+import io.github.oxmose.passlock.tools.FingerPrintAuthHelper;
+import io.github.oxmose.passlock.tools.Tools;
+import io.github.oxmose.passlock.data.Settings;
 import io.github.oxmose.passlock.database.DatabaseSingleton;
 import io.github.oxmose.passlock.database.User;
 
@@ -38,6 +40,16 @@ public class LoginActivity extends AppCompatActivity {
 
         /* TODO REMOVE FOR DEV PURPOSE ONLY */
 
+        User loggedUser = checkLogin("Oxmose", "oxmose");
+        if(loggedUser != null) {
+            /* We logged in */
+
+            Intent i = new Intent(LoginActivity.this, MainActivity.class);
+            i.putExtra("username", loggedUser.getUsername());
+            i.putExtra("decryptionKey", "oxmose");
+            startActivity(i);
+
+        }
 
         /* Set the UI depending on the settings */
         setUI();

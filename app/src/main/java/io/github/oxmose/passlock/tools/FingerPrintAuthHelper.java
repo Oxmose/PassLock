@@ -1,4 +1,4 @@
-package io.github.oxmose.passlock;
+package io.github.oxmose.passlock.tools;
 
 import android.Manifest;
 import android.annotation.TargetApi;
@@ -37,6 +37,8 @@ import javax.crypto.CipherOutputStream;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
+
+import io.github.oxmose.passlock.R;
 
 import static android.content.Context.FINGERPRINT_SERVICE;
 import static android.content.Context.KEYGUARD_SERVICE;

@@ -1,7 +1,9 @@
-package io.github.oxmose.passlock;
+package io.github.oxmose.passlock.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+
+import io.github.oxmose.passlock.tools.ApplicationContextProvider;
 
 public class Settings {
 
