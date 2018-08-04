@@ -1,26 +1,17 @@
 package io.github.oxmose.passlock;
 
-import android.Manifest;
-import android.app.KeyguardManager;
-import android.app.ProgressDialog;
+import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.CancellationSignal;
-import android.security.keystore.KeyGenParameterSpec;
-import android.security.keystore.KeyPermanentlyInvalidatedException;
-import android.security.keystore.KeyProperties;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,20 +19,6 @@ import android.widget.Toast;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.io.File;
-import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-
-import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
 
 import io.github.oxmose.passlock.database.DatabaseSingleton;
 import io.github.oxmose.passlock.database.User;
@@ -86,15 +63,27 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void initFingerPrints() {
-        if(cancellationSignal != null && !cancellationSignal.isCanceled())
-            cancellationSignal.cancel();
-        cancellationSignal = null;
-        cancellationSignal = new CancellationSignal();
+        DatabaseSingleton db = DatabaseSingleton.getInstance();
+        TextView fingerPrintTextView = findViewById(R.id.activity_login_use_finger_textview);
+        ImageView fingerPrintImageView = findViewById(R.id.activity_login_fingerprint_imageview);
 
-        if(fingerPrintAuthHelper.init()) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                fingerPrintAuthHelper.getPassword(cancellationSignal, new LoginCallback());
+        if(fingerPrintAuthHelper != null && db.isFingerprintAccountSet()) {
+            if (cancellationSignal != null && !cancellationSignal.isCanceled())
+                cancellationSignal.cancel();
+            cancellationSignal = null;
+            cancellationSignal = new CancellationSignal();
+
+            if (fingerPrintAuthHelper.init()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    fingerPrintTextView.setVisibility(View.VISIBLE);
+                    fingerPrintImageView.setVisibility(View.VISIBLE);
+                    fingerPrintAuthHelper.getPassword(cancellationSignal, new LoginCallback());
+                }
             }
+        }
+        else {
+            fingerPrintTextView.setVisibility(View.INVISIBLE);
+            fingerPrintImageView.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -183,7 +172,7 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                User loggedUser = checkLogin(usernameEditText.getText().toString(),
+                  User loggedUser = checkLogin(usernameEditText.getText().toString(),
                                              passwordEditText.getText().toString());
                 if(loggedUser != null) {
                     usernameEditText.setError(null);
@@ -263,6 +252,7 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         public void onSuccess(String savedPass) {
+
             /* Get the database singleton */
             DatabaseSingleton db = DatabaseSingleton.getInstance();
 
@@ -282,6 +272,7 @@ public class LoginActivity extends AppCompatActivity {
                 i.putExtra("username", loggedUser.getUsername());
                 i.putExtra("decryptionKey", loggedUser.getDecryptionKey());
                 startActivity(i);
+
                 finish();
             }
             else {
@@ -359,6 +350,5 @@ public class LoginActivity extends AppCompatActivity {
 
         /* Init fingerprint technology */
         initFingerPrints();
-
     }
 }

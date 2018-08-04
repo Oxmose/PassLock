@@ -78,6 +78,7 @@ public class CreateAccountActivity extends Activity {
         /* Cancel fingerprint auth */
         if(cancellationSignal != null)
             cancellationSignal.cancel();
+        fingerInfoDialog.cancel();
     }
 
     @Override
@@ -325,6 +326,7 @@ public class CreateAccountActivity extends Activity {
         @Override
         public void onSuccess(String savedPass) {
             fingerInfoDialog.hide();
+            fingerInfoDialog.cancel();
             if(infoToast != null) {
                 infoToast.cancel();
             }
