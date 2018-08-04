@@ -16,4 +16,5 @@
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
     <string name="add_avatar_optional">Add avatar (optional)</string>
+    <string name="forget">Forget</string>
 </resources>

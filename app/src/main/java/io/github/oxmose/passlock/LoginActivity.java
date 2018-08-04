@@ -79,6 +79,14 @@ public class LoginActivity extends AppCompatActivity {
 
             rememberSwitch.setChecked(true);
 
+            lastUserIconImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ForgetDialog cdd=new ForgetDialog(LoginActivity.this);
+                    cdd.show();
+                }
+            });
+
             /* Diaplay the components */
             lastUserIconImageView.setVisibility(View.VISIBLE);
             lastUsernameTextView.setVisibility(View.VISIBLE);
@@ -146,5 +154,32 @@ public class LoginActivity extends AppCompatActivity {
         User user = db.getUser(username, Tools.hashPassword(password));
 
         return user;
+    }
+
+    public void forgetUser() {
+
+        CircularImageView lastUserIconImageView = findViewById(R.id.activity_login_last_connection_imageview);
+        TextView lastUsernameTextView = findViewById(R.id.activity_login_last_username_textview);
+        EditText usernameEditText = findViewById(R.id.activity_login_username_edittext);
+
+        Switch rememberSwitch = findViewById(R.id.activity_login_remember_me_switch);
+
+        /* Get the settings singleton */
+        Settings settings = Settings.getInstance();
+
+        settings.setLastConnectionUsername("");
+        settings.setLastConnectionImage("");
+        settings.setLastConnectionExists(false);
+
+        lastUsernameTextView.setText("");
+        usernameEditText.setText("");
+
+        rememberSwitch.setChecked(false);
+
+
+        /* Diaplay the components */
+        lastUserIconImageView.setVisibility(View.INVISIBLE);
+        lastUsernameTextView.setVisibility(View.INVISIBLE);
+
     }
 }

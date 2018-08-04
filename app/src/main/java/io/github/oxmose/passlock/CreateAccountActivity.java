@@ -17,8 +17,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
 import io.github.oxmose.passlock.database.DatabaseSingleton;
@@ -63,7 +61,7 @@ public class CreateAccountActivity extends Activity {
 
         saveButton = findViewById(R.id.activity_create_account_save_button);
         cancelButton = findViewById(R.id.activity_create_account_cancel_button);
-        addAvatarButton = findViewById(R.id.activity_create_account__add_avatar_button);
+        addAvatarButton = findViewById(R.id.dialog_forget_user_forget_button);
 
         /* Set components */
         cancelButton.setOnClickListener(new View.OnClickListener() {
@@ -260,6 +258,8 @@ public class CreateAccountActivity extends Activity {
 
         return true;
     }
+
+
 
 
 }
