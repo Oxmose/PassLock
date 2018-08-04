@@ -1,6 +1,5 @@
 package io.github.oxmose.passlock;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.view.View;
@@ -8,8 +7,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
 
-public class ForgetDialog extends Dialog implements
-        android.view.View.OnClickListener {
+public class ForgetDialog extends Dialog implements View.OnClickListener {
 
     public Dialog d;
     public Button cancel, forget;

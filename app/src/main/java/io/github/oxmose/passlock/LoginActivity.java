@@ -54,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
             Log.i("LastIcon", iconPath);
 
             /* If no image is set, display the default one */
-            if(iconPath.equals("")) {
+            if(iconPath.isEmpty()) {
                 int id = getResources()
                         .getIdentifier("io.github.oxmose.passlock:drawable/ic_account_circle",
                                 null, null);
@@ -143,6 +143,8 @@ public class LoginActivity extends AppCompatActivity {
                     Intent i = new Intent(LoginActivity.this, MainActivity.class);
                     i.putExtra("username", loggedUser.getUsername());
                     startActivity(i);
+
+                    finish();
 
                 }
                 else {

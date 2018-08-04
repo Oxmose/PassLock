@@ -2,7 +2,6 @@ package io.github.oxmose.passlock;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 public class Settings {
 

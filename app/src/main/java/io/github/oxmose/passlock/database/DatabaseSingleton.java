@@ -1,10 +1,8 @@
 package io.github.oxmose.passlock.database;
 
-import android.app.Activity;
 import android.arch.persistence.room.Room;
 import android.os.AsyncTask;
 
-import java.lang.ref.WeakReference;
 import java.util.concurrent.ExecutionException;
 
 import io.github.oxmose.passlock.ApplicationContextProvider;
