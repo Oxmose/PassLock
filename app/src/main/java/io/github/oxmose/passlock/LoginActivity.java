@@ -139,6 +139,11 @@ public class LoginActivity extends AppCompatActivity {
                         settings.setLastConnectionExists(false);
                     }
 
+                    /* We logged in */
+                    Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                    i.putExtra("username", loggedUser.getUsername());
+                    startActivity(i);
+
                 }
                 else {
                     usernameEditText.setError("Wrong username or password.");
