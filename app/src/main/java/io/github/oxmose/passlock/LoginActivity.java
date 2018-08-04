@@ -38,16 +38,6 @@ public class LoginActivity extends AppCompatActivity {
 
         /* TODO REMOVE FOR DEV PURPOSE ONLY */
 
-        User loggedUser = checkLogin("Oxmose", "oxmose");
-        if(loggedUser != null) {
-            /* We logged in */
-
-            Intent i = new Intent(LoginActivity.this, MainActivity.class);
-            i.putExtra("username", loggedUser.getUsername());
-            i.putExtra("decryptionKey", "oxmose");
-            startActivity(i);
-
-        }
 
         /* Set the UI depending on the settings */
         setUI();
