@@ -2,6 +2,7 @@ package io.github.oxmose.passlock;
 
 import android.Manifest;
 import android.app.KeyguardManager;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -16,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
@@ -57,7 +59,17 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_login);
+
+        /* TODO REMOVE FOR DEV PURPOSE ONLY */
+        User loggedUser = checkLogin("oxmose", "oxmose");
+        if(loggedUser != null) {
+            /* We logged in */
+            Intent i = new Intent(LoginActivity.this, MainActivity.class);
+            i.putExtra("username", loggedUser.getUsername());
+            startActivity(i);
+        }
 
         /* Init fingerprint technology */
         initFingerPrints();
@@ -377,7 +389,6 @@ public class LoginActivity extends AppCompatActivity {
             Intent i = new Intent(LoginActivity.this, MainActivity.class);
             i.putExtra("username", loggedUser.getUsername());
             startActivity(i);
-
             finish();
         }
         else {

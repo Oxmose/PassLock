@@ -25,4 +25,10 @@
     <string name="enable_lockscreen">Please enable lockscreen security in your device\'s settings</string>
     <string name="wrong_usr_psswd">Wrong username or password.</string>
     <string name="not_any_fingerprint_account">Not any fingerprint protected account.</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
 </resources>
