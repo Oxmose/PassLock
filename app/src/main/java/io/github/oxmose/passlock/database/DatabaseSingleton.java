@@ -72,6 +72,18 @@ public class DatabaseSingleton {
         }
     }
 
+    public User getPincipalUser() {
+        try {
+            return (new GetPrincypalUserAsync(db).execute().get());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return null;
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     private static class GetUserAsync extends AsyncTask<Void, Void, User> {
         private String username;
         private AppDatabase db;
@@ -113,6 +125,19 @@ public class DatabaseSingleton {
         @Override
         protected Boolean doInBackground(Void... params) {
             return (db.userDAO().getPrincipalUser() != null);
+        }
+    }
+
+    private static class GetPrincypalUserAsync extends AsyncTask<Void, Void, User> {
+        private AppDatabase db;
+
+        public GetPrincypalUserAsync(AppDatabase db) {
+            this.db = db;
+        }
+
+        @Override
+        protected User doInBackground(Void... params) {
+            return db.userDAO().getPrincipalUser();
         }
     }
 

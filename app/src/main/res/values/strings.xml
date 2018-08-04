@@ -18,4 +18,11 @@
     <string name="add_avatar_optional">Add avatar (optional)</string>
     <string name="forget">Forget</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="fingerprint_not_supported">Your device doesn\'t support fingerprint authentication</string>
+    <string name="failed_init_cipher">Failed to init Cipher</string>
+    <string name="enable_fingerprint">Please enable the fingerprint permission</string>
+    <string name="register_fingerprints">No fingerprint configured. Please register at least one fingerprint in your device\'s settings</string>
+    <string name="enable_lockscreen">Please enable lockscreen security in your device\'s settings</string>
+    <string name="wrong_usr_psswd">Wrong username or password.</string>
+    <string name="not_any_fingerprint_account">Not any fingerprint protected account.</string>
 </resources>
