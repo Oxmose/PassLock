@@ -78,7 +78,8 @@ public class CreateAccountActivity extends Activity {
         /* Cancel fingerprint auth */
         if(cancellationSignal != null)
             cancellationSignal.cancel();
-        fingerInfoDialog.cancel();
+        if(fingerInfoDialog != null)
+            fingerInfoDialog.cancel();
     }
 
     @Override

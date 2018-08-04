@@ -1,10 +1,9 @@
 package io.github.oxmose.passlock;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -13,7 +12,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.mikhaellopez.circularimageview.CircularImageView;
+
+import java.io.File;
+
+import io.github.oxmose.passlock.database.DatabaseSingleton;
+import io.github.oxmose.passlock.database.User;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -39,6 +47,78 @@ public class MainActivity extends AppCompatActivity
         String decryptionKey = intent.getStringExtra("decryptionKey");
 
         Toast.makeText(this, username + " | " + decryptionKey, Toast.LENGTH_LONG).show();
+
+        /* Create the user session */
+        if(!createUserSession(username, decryptionKey)) {
+            Toast.makeText(this, "Cannot retrieve user information", Toast.LENGTH_LONG).show();
+            Intent i = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(i);
+            finish();
+        }
+
+        /* Init UI */
+        initDrawerHeader();
+
+
+    }
+
+    private void initDrawerHeader() {
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
+
+        CircularImageView headerIcon = headerView.findViewById(R.id.nav_header_main_circularimageview);
+        TextView usernameTextView = headerView.findViewById(R.id.nav_header_main_title_textview);
+        TextView headerSubtitle = headerView.findViewById(R.id.nav_header_main_subtitle_textview);
+
+        /* Get user */
+        User user = Session.getInstance().getCurrentUser();
+
+        String iconPath = user.getAvatar();
+
+        /* If no image is set, display the default one */
+        if(iconPath.isEmpty()) {
+            int id = getResources()
+                    .getIdentifier("io.github.oxmose.passlock:drawable/ic_account_circle",
+                            null, null);
+            headerIcon.setImageResource(id);
+        }
+        else {
+            File imgFile = new  File(iconPath);
+
+            if(imgFile.exists()){
+                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                headerIcon.setImageBitmap(myBitmap);
+            }
+            else {
+                int id = getResources()
+                        .getIdentifier("io.github.oxmose.passlock:drawable/ic_account_circle",
+                                null, null);
+                headerIcon.setImageResource(id);
+            }
+        }
+
+        usernameTextView.setText(user.getUsername());
+        if(user.isPrincipal())
+            headerSubtitle.setText(R.string.princ_account);
+        else
+            headerSubtitle.setText(R.string.sec_account);
+
+    }
+
+    private boolean createUserSession(String username, String decryptionKey) {
+        /* Get user data */
+        DatabaseSingleton db = DatabaseSingleton.getInstance();
+        User user = db.getUser(username);
+
+        if(user == null)
+            return false;
+
+        user.setDecryptionKey(decryptionKey);
+
+        /* Add user to session */
+        Session.getInstance().setCurrentUser(user);
+
+        return true;
     }
 
     @Override
@@ -65,10 +145,6 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }

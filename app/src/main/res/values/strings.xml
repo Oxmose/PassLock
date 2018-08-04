@@ -35,4 +35,6 @@
     <string name="failed_to_init_keystore"><![CDATA[Failed init of keyStore & keyGenerator:]]></string>
     <string name="fingerprint_permission_missing">User hasn\'t granted permission to use Fingerprint</string>
     <string name="an_error_occured">An error occurred:</string>
+    <string name="sec_account">Secondary account</string>
+    <string name="princ_account">Principal account</string>
 </resources>

@@ -94,6 +94,18 @@ public class DatabaseSingleton {
         }
     }
 
+    public User getUser(String username) {
+        try {
+            return (new GetUserAsync(username, db).execute().get());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return null;
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     private static class GetUserAsync extends AsyncTask<Void, Void, User> {
         private String username;
         private AppDatabase db;
