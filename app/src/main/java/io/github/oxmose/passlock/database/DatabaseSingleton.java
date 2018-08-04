@@ -117,7 +117,11 @@ public class DatabaseSingleton {
 
         @Override
         protected User doInBackground(Void... params) {
-            return db.userDAO().findByUsername(username);
+            User user = db.userDAO().findByUsername(username);
+            if(user!= null)
+                user.setPasswordCount(db.passwordDAO().getPasswordCount(username));
+
+            return user;
         }
     }
 

@@ -46,8 +46,6 @@ public class MainActivity extends AppCompatActivity
         String username = intent.getStringExtra("username");
         String decryptionKey = intent.getStringExtra("decryptionKey");
 
-        Toast.makeText(this, username + " | " + decryptionKey, Toast.LENGTH_LONG).show();
-
         /* Create the user session */
         if(!createUserSession(username, decryptionKey)) {
             Toast.makeText(this, "Cannot retrieve user information", Toast.LENGTH_LONG).show();
@@ -69,6 +67,7 @@ public class MainActivity extends AppCompatActivity
         CircularImageView headerIcon = headerView.findViewById(R.id.nav_header_main_circularimageview);
         TextView usernameTextView = headerView.findViewById(R.id.nav_header_main_title_textview);
         TextView headerSubtitle = headerView.findViewById(R.id.nav_header_main_subtitle_textview);
+        TextView passwordsCount = headerView.findViewById(R.id.nav_header_main_passwd_count_textview);
 
         /* Get user */
         User user = Session.getInstance().getCurrentUser();
@@ -102,6 +101,8 @@ public class MainActivity extends AppCompatActivity
             headerSubtitle.setText(R.string.princ_account);
         else
             headerSubtitle.setText(R.string.sec_account);
+
+        passwordsCount.setText(user.getPasswordCount() + "");
 
     }
 
@@ -167,10 +168,20 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_logout) {
 
+            logout();
+
+            Toast.makeText(this, "Logged out", Toast.LENGTH_LONG).show();
+            Intent i = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(i);
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void logout() {
+        Session.getInstance().setCurrentUser(null);
     }
 }

@@ -21,6 +21,8 @@ public class User {
     @ColumnInfo(name = "avatar")
     private String avatar;
 
+    private int passwordCount;
+
     private String decryptionKey;
 
     public User(@NonNull String usernameText, String passwordText,
@@ -29,6 +31,8 @@ public class User {
         this.password = passwordText;
         this.isPrincipal = isPrincipal;
         this.avatar = avatar;
+
+        passwordCount = 0;
     }
 
     public User() {}
@@ -73,5 +77,13 @@ public class User {
 
     public void setDecryptionKey(String decryptionKey) {
         this.decryptionKey = decryptionKey;
+    }
+
+    public int getPasswordCount() {
+        return passwordCount;
+    }
+
+    public void setPasswordCount(int passwordCount) {
+        this.passwordCount = passwordCount;
     }
 }
