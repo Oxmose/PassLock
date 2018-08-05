@@ -13,16 +13,16 @@ import io.github.oxmose.passlock.R;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link SearchFragment.OnFragmentInteractionListener} interface
+ * {@link AddPasswordFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link SearchFragment#newInstance} factory method to
+ * Use the {@link AddPasswordFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SearchFragment extends Fragment {
+public class AddPasswordFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public SearchFragment() {
+    public AddPasswordFragment() {
         // Required empty public constructor
     }
 
@@ -30,10 +30,13 @@ public class SearchFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment SearchFragment.
+     * @param param1 Parameter 1.
+     * @param param2 Parameter 2.
+     * @return A new instance of fragment AddPasswordFragment.
      */
-    public static SearchFragment newInstance() {
-        SearchFragment fragment = new SearchFragment();
+    // TODO: Rename and change types and number of parameters
+    public static AddPasswordFragment newInstance(String param1, String param2) {
+        AddPasswordFragment fragment = new AddPasswordFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -48,7 +51,7 @@ public class SearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search, container, false);
+        return inflater.inflate(R.layout.fragment_add_password, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

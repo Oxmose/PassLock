@@ -25,10 +25,12 @@ import java.io.File;
 import io.github.oxmose.passlock.data.Session;
 import io.github.oxmose.passlock.database.DatabaseSingleton;
 import io.github.oxmose.passlock.database.User;
+import io.github.oxmose.passlock.fragments.AddPasswordFragment;
 import io.github.oxmose.passlock.fragments.SearchFragment;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, SearchFragment.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        SearchFragment.OnFragmentInteractionListener, AddPasswordFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,10 +171,16 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        // Begin the transaction
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
+
         if (id == R.id.nav_search) {
-            // Handle the camera action
+            // Replace the contents of the container with the new fragment
+            ft.replace(R.id.activity_main_fragment_placeholder, new SearchFragment());
         } else if (id == R.id.nav_add) {
-            // Handle the camera action
+            // Replace the contents of the container with the new fragment
+            ft.replace(R.id.activity_main_fragment_placeholder, new AddPasswordFragment());
         } else if (id == R.id.nav_passwords) {
 
         } else if (id == R.id.nav_pins) {
@@ -190,6 +198,8 @@ public class MainActivity extends AppCompatActivity
             startActivity(i);
             finish();
         }
+
+        ft.commit();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
