@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.CancellationSignal;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,6 +19,8 @@ import android.widget.Toast;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.io.File;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 import io.github.oxmose.passlock.tools.FingerPrintAuthHelper;
 import io.github.oxmose.passlock.tools.Tools;
@@ -39,16 +42,17 @@ public class LoginActivity extends AppCompatActivity {
 
 
         /* TODO REMOVE FOR DEV PURPOSE ONLY */
+        if(false) {
+            User loggedUser = checkLogin("Oxmose", "oxmose");
+            if (loggedUser != null) {
+                /* We logged in */
 
-        User loggedUser = checkLogin("Oxmose", "oxmose");
-        if(loggedUser != null) {
-            /* We logged in */
+                Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                i.putExtra("username", loggedUser.getUsername());
+                i.putExtra("decryptionKey", "oxmose");
+                startActivity(i);
 
-            Intent i = new Intent(LoginActivity.this, MainActivity.class);
-            i.putExtra("username", loggedUser.getUsername());
-            i.putExtra("decryptionKey", "oxmose");
-            startActivity(i);
-
+            }
         }
 
         /* Set the UI depending on the settings */
@@ -218,7 +222,21 @@ public class LoginActivity extends AppCompatActivity {
     private User checkLogin(String username, String password) {
         /* Get the database singleton */
         DatabaseSingleton db = DatabaseSingleton.getInstance();
-        User user = db.getUser(username, Tools.hashPassword(password));
+
+        String passwordSaved = db.getUserPasword(username);
+        Log.i("HASH SAVED", passwordSaved);
+        if(passwordSaved == null || passwordSaved.isEmpty())
+            return null;
+
+        try {
+            if(!Tools.validatePassword(password, passwordSaved))
+                return null;
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        User user = db.getUser(username);
 
         return user;
     }

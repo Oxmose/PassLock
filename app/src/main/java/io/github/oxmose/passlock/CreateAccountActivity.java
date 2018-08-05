@@ -21,6 +21,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Random;
 
 import io.github.oxmose.passlock.tools.FingerPrintAuthHelper;
@@ -311,7 +313,12 @@ public class CreateAccountActivity extends Activity {
         String passwordText = passwordEditText.getText().toString();
 
         /* Hash password */
-        passwordText = Tools.hashPassword(passwordText);
+        try {
+            passwordText = Tools.hashPassword(passwordText);
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            e.printStackTrace();
+            return false;
+        }
         if(passwordText.isEmpty()) {
             return false;
         }

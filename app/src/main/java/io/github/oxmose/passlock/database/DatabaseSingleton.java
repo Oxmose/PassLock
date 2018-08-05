@@ -115,6 +115,14 @@ public class DatabaseSingleton {
         }
     }
 
+    public String getUserPasword(String username) {
+        User user = getUser(username);
+        if(user != null)
+            return user.getPassword();
+
+        return "";
+    }
+
     private static class GetPasswordCountAsync extends AsyncTask<Void, Void, Integer> {
         private String username;
         private AppDatabase db;

@@ -15,6 +15,9 @@ public class User {
     @ColumnInfo(name = "password")
     private String password;
 
+    @ColumnInfo(name = "salt")
+    private String salt;
+
     @ColumnInfo(name = "is_principal")
     private boolean isPrincipal;
 
@@ -85,5 +88,13 @@ public class User {
 
     public void setPasswordCount(int passwordCount) {
         this.passwordCount = passwordCount;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
 }
