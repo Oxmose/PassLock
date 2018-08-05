@@ -319,9 +319,7 @@ public class CreateAccountActivity extends Activity {
         newUser = new User(usernameText, passwordText, fingerprintsCheckBox.isChecked(),
                                 avatarFileName);
 
-        db.createUser(newUser);
-
-        return true;
+        return db.createUser(newUser);
     }
 
     public class FingerPrintCallback implements FingerPrintAuthHelper.Callback {

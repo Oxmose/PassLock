@@ -63,8 +63,10 @@ public class MainActivity extends AppCompatActivity
         /* Init UI */
         initDrawerHeader();
 
-        /* Init fragment management */
-        initFragments();
+        if(null == savedInstanceState) {
+            /* Init fragment management */
+            initFragments();
+        }
     }
 
     private void initFragments() {
@@ -76,7 +78,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initDrawerHeader() {
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
 
         CircularImageView headerIcon = headerView.findViewById(R.id.nav_header_main_circularimageview);
@@ -213,5 +215,18 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    public void updatePasswordCount() {
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
+        TextView passwordsCount = headerView.findViewById(R.id.nav_header_main_passwd_count_textview);
+
+        User user = Session.getInstance().getCurrentUser();
+
+        /* Update UI */
+        passwordsCount.setText(user.getPasswordCount() + "");
+        passwordsCount.invalidate();
     }
 }

@@ -21,4 +21,7 @@ public interface PasswordDAO {
 
     @Query("SELECT COUNT(*) FROM password WHERE user = (:username)")
     int getPasswordCount(String username);
+
+    @Query("SELECT * FROM password WHERE user = (:username) AND name = (:passwordName)")
+    Password getUserPassword(String username, String passwordName);
 }
