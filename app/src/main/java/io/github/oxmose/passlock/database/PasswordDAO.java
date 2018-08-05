@@ -5,6 +5,8 @@ import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
+import java.util.List;
+
 @Dao
 public interface PasswordDAO {
     @Query("SELECT * FROM password WHERE id = (:id)")
@@ -24,4 +26,10 @@ public interface PasswordDAO {
 
     @Query("SELECT * FROM password WHERE user = (:username) AND name = (:passwordName)")
     Password getUserPassword(String username, String passwordName);
+
+    @Query("SELECT * FROM password WHERE user = (:username)")
+    List<Password> getAllUserPasswords(String username);
+
+    @Query("SELECT * FROM password WHERE user = (:username) AND name LIKE (:text)")
+    List<Password> getUserPassordsLike(String username, String text);
 }

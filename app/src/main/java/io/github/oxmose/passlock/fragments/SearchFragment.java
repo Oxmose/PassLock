@@ -2,41 +2,46 @@ package io.github.oxmose.passlock.fragments;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.mancj.materialsearchbar.MaterialSearchBar;
+
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.github.oxmose.passlock.R;
+import io.github.oxmose.passlock.adapters.ListPasswordRowAdapter;
+import io.github.oxmose.passlock.data.Session;
+import io.github.oxmose.passlock.database.AppDatabase;
+import io.github.oxmose.passlock.database.DatabaseSingleton;
+import io.github.oxmose.passlock.database.Password;
+import io.github.oxmose.passlock.database.User;
+import io.github.oxmose.passlock.model.ListPasswordRowItem;
+import io.github.oxmose.passlock.tools.AESEncrypt;
+import io.github.oxmose.passlock.tools.ApplicationContextProvider;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link SearchFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link SearchFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class SearchFragment extends Fragment {
 
-    private OnFragmentInteractionListener mListener;
+    private TextView infoTextView;
+    private ListView searchPasswordListview;
+    private MaterialSearchBar searchBar;
+
+    private List<ListPasswordRowItem> listItems = null;
+    private ListPasswordRowAdapter listAdapter;
 
     public SearchFragment() {
         // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment SearchFragment.
-     */
-    public static SearchFragment newInstance() {
-        SearchFragment fragment = new SearchFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
@@ -51,42 +56,118 @@ public class SearchFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_search, container, false);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        /* Get components */
+        searchPasswordListview = view.findViewById(R.id.fragment_search_llistview);
+        searchBar = view.findViewById(R.id.fragment_search_searchbar);
+        infoTextView = view.findViewById(R.id.fragment_search_searchinfo);
+
+        /* Init compoments */
+        initUI();
+    }
+
+    private void initUI() {
+        if(listItems == null) {
+            listItems = new ArrayList<>();
         }
+
+        listAdapter = new ListPasswordRowAdapter(listItems, ApplicationContextProvider.getContext());
+
+        searchPasswordListview.setAdapter(listAdapter);
+        searchPasswordListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+        });
+
+        searchBar.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
+            @Override
+            public void onSearchStateChanged(boolean enabled) {
+
+            }
+
+            @Override
+            public void onSearchConfirmed(CharSequence text) {
+                listItems.clear();
+                listAdapter.notifyDataSetChanged();
+
+                infoTextView.setText("Searching...");
+                infoTextView.setVisibility(View.VISIBLE);
+
+                new StartSearchAsync().execute();
+            }
+
+            @Override
+            public void onButtonClicked(int buttonCode) {
+
+            }
+        });
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    private class StartSearchAsync extends AsyncTask<Void, Void, Void> {
+        StartSearchAsync() {
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            listItems.clear();
+
+            DatabaseSingleton db = DatabaseSingleton.getInstance();
+            User user = Session.getInstance().getCurrentUser();
+
+            List<Password> passwordsList = db.getUserPasswordsNonAsync(user, searchBar.getText());
+
+            for(Password password: passwordsList) {
+                String title = password.getName();
+                String value = "Tap to decrypt password...";
+
+                ListPasswordRowItem.ITEM_TYPE type;
+                if(password.isPassword()) {
+                    type = ListPasswordRowItem.ITEM_TYPE.PASSWORD;
+                }
+                else if(password.isPin()) {
+                    type = ListPasswordRowItem.ITEM_TYPE.PIN;
+                }
+                else if(password.isDigicode()) {
+                    type = ListPasswordRowItem.ITEM_TYPE.DIGICODE;
+                }
+                else {
+                    type = ListPasswordRowItem.ITEM_TYPE.PASSWORD;
+                }
+
+                ListPasswordRowItem newItem = new ListPasswordRowItem(title, value, type);
+                listItems.add(newItem);
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            if(listItems.isEmpty()) {
+                infoTextView.setText("No results");
+                infoTextView.setVisibility(View.VISIBLE);
+            }
+            else {
+                listAdapter.notifyDataSetChanged();
+                infoTextView.setVisibility(View.INVISIBLE);
+            }
+        }
     }
 }

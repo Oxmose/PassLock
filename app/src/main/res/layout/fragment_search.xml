@@ -16,8 +16,7 @@
         android:background="?android:attr/listDivider" />
 
     <com.mancj.materialsearchbar.MaterialSearchBar
-        android:id="@+id/searchBar"
-        style="@style/MaterialSearchBarLight"
+        android:id="@+id/fragment_search_searchbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -33,10 +32,22 @@
 
 
     <ListView
+        android:id="@+id/fragment_search_llistview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="80dp" />
+        android:layout_marginTop="64dp" />
+
+    <TextView
+        android:id="@+id/fragment_search_searchinfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="90dp"
+        android:text='To search for password pleease use the "Search" bar. If you prefer, you can browse your passwords by category thanks to the menu.'
+        android:textAlignment="center"
+        android:textColor="@android:color/darker_gray" />
 </FrameLayout>

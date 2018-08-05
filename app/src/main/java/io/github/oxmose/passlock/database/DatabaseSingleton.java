@@ -3,12 +3,19 @@ package io.github.oxmose.passlock.database;
 import android.arch.persistence.room.Room;
 import android.os.AsyncTask;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import io.github.oxmose.passlock.tools.ApplicationContextProvider;
 
 public class DatabaseSingleton {
     private static final DatabaseSingleton instance = new DatabaseSingleton();
+
+    public AppDatabase getDb() {
+        return db;
+    }
+
     final private AppDatabase db;
 
     static public DatabaseSingleton getInstance() {
@@ -121,6 +128,10 @@ public class DatabaseSingleton {
             return user.getPassword();
 
         return "";
+    }
+
+    public List<Password> getUserPasswordsNonAsync(User user, String text) {
+        return db.passwordDAO().getUserPassordsLike(user.getUsername(), "%" + text + "%");
     }
 
     private static class GetPasswordCountAsync extends AsyncTask<Void, Void, Integer> {

@@ -35,8 +35,6 @@ import io.github.oxmose.passlock.tools.AESEncrypt;
  * Activities that contain this fragment must implement the
  * {@link AddPasswordFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link AddPasswordFragment#newInstance} factory method to
- * create an instance of this fragment.
  */
 public class AddPasswordFragment extends Fragment {
 
@@ -56,18 +54,6 @@ public class AddPasswordFragment extends Fragment {
 
     public AddPasswordFragment() {
         // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     * @return A new instance of fragment AddPasswordFragment.
-     */
-    public static AddPasswordFragment newInstance() {
-        AddPasswordFragment fragment = new AddPasswordFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override

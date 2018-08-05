@@ -30,7 +30,7 @@ import io.github.oxmose.passlock.fragments.SearchFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        SearchFragment.OnFragmentInteractionListener, AddPasswordFragment.OnFragmentInteractionListener {
+        AddPasswordFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -212,10 +212,6 @@ public class MainActivity extends AppCompatActivity
         Session.getInstance().setCurrentUser(null);
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
 
     @Override
     public void updatePasswordCount() {
