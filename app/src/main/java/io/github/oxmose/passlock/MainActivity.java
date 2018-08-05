@@ -3,8 +3,10 @@ package io.github.oxmose.passlock;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -23,9 +25,10 @@ import java.io.File;
 import io.github.oxmose.passlock.data.Session;
 import io.github.oxmose.passlock.database.DatabaseSingleton;
 import io.github.oxmose.passlock.database.User;
+import io.github.oxmose.passlock.fragments.SearchFragment;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, SearchFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +61,16 @@ public class MainActivity extends AppCompatActivity
         /* Init UI */
         initDrawerHeader();
 
+        /* Init fragment management */
+        initFragments();
+    }
 
+    private void initFragments() {
+        // Begin the transaction
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        // Replace the contents of the container with the new fragment
+        ft.replace(R.id.activity_main_fragment_placeholder, new SearchFragment());
+        ft.commit();
     }
 
     private void initDrawerHeader() {
@@ -186,5 +198,10 @@ public class MainActivity extends AppCompatActivity
 
     private void logout() {
         Session.getInstance().setCurrentUser(null);
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }
