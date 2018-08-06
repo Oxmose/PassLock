@@ -47,7 +47,6 @@ public class PasswordViewActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,6 +122,15 @@ public class PasswordViewActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                finish();
+            }
+        });
+
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DatabaseSingleton.getInstance().deletePassword(password);
+                user.setPasswordCount(user.getPasswordCount() - 1);
                 finish();
             }
         });

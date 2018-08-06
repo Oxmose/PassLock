@@ -143,6 +143,30 @@ public class DatabaseSingleton {
         }
     }
 
+    public void deletePassword(Password password) {
+        try {
+            new DeletePasswordAsync(password, db).execute().get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static class DeletePasswordAsync extends AsyncTask<Void, Void, Void> {
+        private Password password;
+        private AppDatabase db;
+
+        DeletePasswordAsync(Password password, AppDatabase db) {
+            this.password = password;
+            this.db = db;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            db.passwordDAO().delete(password);
+            return null;
+        }
+    }
+
     private static class GetPasswordByIdAsync extends AsyncTask<Void, Void, Password> {
         private int id;
         private AppDatabase db;

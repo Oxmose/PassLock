@@ -9,6 +9,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -32,6 +33,8 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         AddPasswordFragment.OnFragmentInteractionListener {
 
+    private TextView passwordsCount;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +44,16 @@ public class MainActivity extends AppCompatActivity
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                if (slideOffset != 0) {
+
+                    passwordsCount.setText(Session.getInstance().getCurrentUser().getPasswordCount() + "");
+                }
+                super.onDrawerSlide(drawerView, slideOffset);
+            }
+        };
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -84,7 +96,7 @@ public class MainActivity extends AppCompatActivity
         CircularImageView headerIcon = headerView.findViewById(R.id.nav_header_main_circularimageview);
         TextView usernameTextView = headerView.findViewById(R.id.nav_header_main_title_textview);
         TextView headerSubtitle = headerView.findViewById(R.id.nav_header_main_subtitle_textview);
-        TextView passwordsCount = headerView.findViewById(R.id.nav_header_main_passwd_count_textview);
+        passwordsCount = headerView.findViewById(R.id.nav_header_main_passwd_count_textview);
 
         /* Get user */
         User user = Session.getInstance().getCurrentUser();

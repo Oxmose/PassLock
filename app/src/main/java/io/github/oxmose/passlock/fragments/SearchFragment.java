@@ -179,4 +179,17 @@ public class SearchFragment extends Fragment {
             }
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        searchBar.setText("");
+        listItems.clear();
+        listAdapter.notifyDataSetChanged();
+
+        infoTextView.setText("Searching...");
+        infoTextView.setVisibility(View.VISIBLE);
+
+        new StartSearchAsync().execute();
+    }
 }
