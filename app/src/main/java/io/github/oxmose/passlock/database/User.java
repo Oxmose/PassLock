@@ -2,10 +2,11 @@ package io.github.oxmose.passlock.database;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
-@Entity
+@Entity(indices = {@Index("username")})
 public class User {
 
     @PrimaryKey

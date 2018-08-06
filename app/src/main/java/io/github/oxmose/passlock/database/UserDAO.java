@@ -11,9 +11,6 @@ public interface UserDAO {
     User findByUsername(String username);
 
     @Insert
-    void insertAll(User... users);
-
-    @Insert
     void insert(User user);
 
     @Delete

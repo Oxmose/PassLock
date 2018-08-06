@@ -9,11 +9,10 @@ import android.widget.Toast;
 
 public class ForgetDialog extends Dialog implements View.OnClickListener {
 
-    public Dialog d;
     public Button cancel, forget;
     public LoginActivity a;
 
-    public ForgetDialog(LoginActivity a) {
+    ForgetDialog(LoginActivity a) {
         super(a);
         this.a = a;
     }
@@ -23,8 +22,8 @@ public class ForgetDialog extends Dialog implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_forget_user);
-        cancel = (Button) findViewById(R.id.dialog_forget_user_cancel_button);
-        forget = (Button) findViewById(R.id.dialog_forget_user_forget_button);
+        cancel = findViewById(R.id.dialog_forget_user_cancel_button);
+        forget = findViewById(R.id.dialog_forget_user_forget_button);
         cancel.setOnClickListener(this);
         forget.setOnClickListener(this);
     }

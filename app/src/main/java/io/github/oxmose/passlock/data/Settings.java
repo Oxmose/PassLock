@@ -1,5 +1,6 @@
 package io.github.oxmose.passlock.data;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -17,6 +18,7 @@ public class Settings {
         return instance;
     }
 
+    @SuppressLint("CommitPrefEdits")
     private Settings() {
         /* Get application context */
         Context context = ApplicationContextProvider.getContext();

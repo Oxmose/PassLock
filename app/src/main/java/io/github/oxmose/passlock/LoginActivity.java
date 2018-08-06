@@ -236,9 +236,7 @@ public class LoginActivity extends AppCompatActivity {
             return null;
         }
 
-        User user = db.getUser(username);
-
-        return user;
+        return db.getUser(username);
     }
 
     public void forgetUser() {

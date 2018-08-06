@@ -1,9 +1,7 @@
 package io.github.oxmose.passlock.tools;
 
 import android.util.Base64;
-import android.util.Log;
 
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;

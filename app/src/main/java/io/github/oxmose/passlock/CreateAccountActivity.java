@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.app.Activity;
 import android.os.CancellationSignal;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -46,10 +47,6 @@ public class CreateAccountActivity extends Activity {
     private EditText passwordConfEditText;
 
     private CheckBox fingerprintsCheckBox;
-
-    private Button saveButton;
-    private Button cancelButton;
-    private Button addAvatarButton;
 
     private CancellationSignal cancellationSignal;
     private FingerPrintAuthHelper fingerPrintAuthHelper;
@@ -116,9 +113,9 @@ public class CreateAccountActivity extends Activity {
         fingerprintsCheckBox =
                          findViewById(R.id.activity_create_account_fingerprints_enable_checkbox);
 
-        saveButton = findViewById(R.id.activity_create_account_save_button);
-        cancelButton = findViewById(R.id.activity_create_account_cancel_button);
-        addAvatarButton = findViewById(R.id.dialog_forget_user_forget_button);
+        Button saveButton = findViewById(R.id.activity_create_account_save_button);
+        Button cancelButton = findViewById(R.id.activity_create_account_cancel_button);
+        Button addAvatarButton = findViewById(R.id.dialog_forget_user_forget_button);
 
         /* Set components */
         cancelButton.setOnClickListener(new View.OnClickListener() {
@@ -251,7 +248,10 @@ public class CreateAccountActivity extends Activity {
         if (resultCode == RESULT_OK) {
             try {
                 final Uri imageUri = data.getData();
-                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                InputStream imageStream = null;
+                if (imageUri != null) {
+                    imageStream = getContentResolver().openInputStream(imageUri);
+                }
                 final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
 
                 /* Save the image */
@@ -264,7 +264,10 @@ public class CreateAccountActivity extends Activity {
                     File myDir = new File(root + "/" + AVATAR_FOLDER);
                     File file = new File(myDir, avatarFileName);
                     if(file.exists()) {
-                        file.delete();
+                        boolean delete = file.delete();
+                        if(!delete) {
+                            Log.v("Avatar Deletion", "Returned false");
+                        }
                     }
                 }
                 avatarFileName = root + "/" + AVATAR_FOLDER + "/" + newFile;
@@ -284,10 +287,13 @@ public class CreateAccountActivity extends Activity {
 
         String root = getFilesDir().toString();
         File myDir = new File(root + "/" + AVATAR_FOLDER);
-        myDir.mkdirs();
+        boolean mkdirs = myDir.mkdirs();
+        if(!mkdirs) {
+            return "";
+        }
         Random generator = new Random();
-        File file = null;
-        String fname = "";
+        File file;
+        String fname;
         int n = 10000;
         do {
             n = generator.nextInt(n);

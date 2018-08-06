@@ -30,7 +30,6 @@
         <activity
             android:name=".CreateAccountActivity"
             android:label="@string/title_activity_create_account"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.DayNight.Dialog" />
         <activity
             android:name=".MainActivity"

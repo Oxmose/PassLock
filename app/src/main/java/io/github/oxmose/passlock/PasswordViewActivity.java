@@ -2,8 +2,8 @@ package io.github.oxmose.passlock;
 
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
@@ -12,11 +12,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.ref.WeakReference;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.List;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -26,7 +26,6 @@ import io.github.oxmose.passlock.data.Session;
 import io.github.oxmose.passlock.database.DatabaseSingleton;
 import io.github.oxmose.passlock.database.Password;
 import io.github.oxmose.passlock.database.User;
-import io.github.oxmose.passlock.model.ListPasswordRowItem;
 import io.github.oxmose.passlock.tools.AESEncrypt;
 
 public class PasswordViewActivity extends AppCompatActivity {
@@ -82,33 +81,29 @@ public class PasswordViewActivity extends AppCompatActivity {
         user = Session.getInstance().getCurrentUser();
 
         passwordTitle.setText(password.getName());
-        passwordValue.setText("Decrypting");
-
-        id = getResources()
-                .getIdentifier("io.github.oxmose.passlock:drawable/ic_lock_outline",
-                        null, null);
+        passwordValue.setText(R.string.decrypting);
 
         if(password.isPassword()) {
-            passwordType.setText("Password");
+            passwordType.setText(R.string.password);
             id = getResources()
                     .getIdentifier("io.github.oxmose.passlock:drawable/ic_lock_outline",
                             null, null);
 
         }
         else if(password.isPin()) {
-            passwordType.setText("Pin");
-            getResources()
+            passwordType.setText(R.string.pin);
+            id = getResources()
                     .getIdentifier("io.github.oxmose.passlock:drawable/ic_credit_card",
                             null, null);
         }
         else if(password.isDigicode()) {
-            passwordType.setText("Digicode");
-            getResources()
+            passwordType.setText(R.string.digicode);
+            id = getResources()
                     .getIdentifier("io.github.oxmose.passlock:drawable/ic_dialpad",
                             null, null);
         }
         else {
-            passwordType.setText("Password");
+            passwordType.setText(R.string.password);
             id = getResources()
                     .getIdentifier("io.github.oxmose.passlock:drawable/ic_lock_outline",
                             null, null);
@@ -117,7 +112,7 @@ public class PasswordViewActivity extends AppCompatActivity {
         passwordIcon.setImageResource(id);
 
         if(decryptedPassword == null)
-            new DecryptPasswordAync().execute();
+            new DecryptPasswordAync(this).execute();
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,22 +129,33 @@ public class PasswordViewActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
-    private class DecryptPasswordAync extends AsyncTask<Void, Void, Void> {
-        DecryptPasswordAync() {
+    private static class DecryptPasswordAync extends AsyncTask<Void, Void, Void> {
+        private WeakReference<PasswordViewActivity> activityRef;
+
+        DecryptPasswordAync(PasswordViewActivity activityRef) {
+            this.activityRef = new WeakReference<>(activityRef);
         }
 
         @Override
         protected Void doInBackground(Void... params) {
+            PasswordViewActivity activity = activityRef.get();
             try {
-                decryptedPassword = AESEncrypt.decryptString(password.getValue(), user.getDecryptionKey());
+                activity.decryptedPassword = AESEncrypt.decryptString(activity.password.getValue(), activity.user.getDecryptionKey());
             } catch (InvalidAlgorithmParameterException | InvalidKeyException |
                     NoSuchPaddingException | BadPaddingException |
                     NoSuchAlgorithmException | UnsupportedEncodingException |
                     IllegalBlockSizeException | InvalidKeySpecException e) {
                 e.printStackTrace();
-                decryptedPassword = "Decryption failed.";
+                activity.decryptedPassword = "Decryption failed.";
             }
 
             return null;
@@ -159,7 +165,9 @@ public class PasswordViewActivity extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
-            passwordValue.setText(decryptedPassword);
+            PasswordViewActivity activity = activityRef.get();
+
+            activity.passwordValue.setText(activity.decryptedPassword);
         }
     }
 }

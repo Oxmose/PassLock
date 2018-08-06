@@ -37,7 +37,10 @@
     <string name="an_error_occured">An error occurred:</string>
     <string name="sec_account">Secondary account</string>
     <string name="princ_account">Principal account</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="searching">Searching…</string>
+    <string name="no_result">No results</string>
+    <string name="placeholder">%d</string>
+    <string name="decrypting">Decrypting</string>
+    <string name="pin">Pin</string>
+    <string name="digicode">Digicode</string>
 </resources>

@@ -13,9 +13,6 @@ public interface PasswordDAO {
     Password findById(int id);
 
     @Insert
-    void insertAll(Password... passwords);
-
-    @Insert
     void insert(Password password);
 
     @Delete
@@ -26,9 +23,6 @@ public interface PasswordDAO {
 
     @Query("SELECT * FROM password WHERE user = (:username) AND name = (:passwordName)")
     Password getUserPassword(String username, String passwordName);
-
-    @Query("SELECT * FROM password WHERE user = (:username)")
-    List<Password> getAllUserPasswords(String username);
 
     @Query("SELECT * FROM password WHERE user = (:username) AND name LIKE (:text)")
     List<Password> getUserPassordsLike(String username, String text);

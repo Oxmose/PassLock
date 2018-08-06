@@ -73,11 +73,10 @@ public class AESEncrypt {
         byte[] cipherText = cipher.doFinal(stringToEncrypt.getBytes( "UTF-8"));
 
         /* Save to final string */
-        String finalString = Integer.toString(iterCount) + stringDelimiter + /* Iter count */
+        return Integer.toString(iterCount) + stringDelimiter + /* Iter count */
                              Base64.encodeToString(iv, Base64.NO_WRAP) + stringDelimiter + /* IV */
                              Base64.encodeToString(salt, Base64.NO_WRAP) + stringDelimiter + /* Salt */
-                             Base64.encodeToString(cipherText, Base64.NO_WRAP);  /* Encrypted password */
-        return finalString;
+                             Base64.encodeToString(cipherText, Base64.NO_WRAP);
     }
 
     public static String decryptString(String stringToDecrypt, String password)
@@ -112,8 +111,7 @@ public class AESEncrypt {
         cipher.init(Cipher.DECRYPT_MODE, key, parameterSpec);
 
         byte[] plaintext = cipher.doFinal(cipherBytes);
-        String plainrStr = new String(plaintext , "UTF-8");
 
-        return plainrStr;
+        return new String(plaintext , "UTF-8");
     }
 }

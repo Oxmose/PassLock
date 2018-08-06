@@ -3,7 +3,6 @@ package io.github.oxmose.passlock.database;
 import android.arch.persistence.room.Room;
 import android.os.AsyncTask;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -29,7 +28,6 @@ public class DatabaseSingleton {
     }
 
     public boolean usernameExists(String usernameText) {
-
         try {
             return (new GetUserAsync(usernameText, db).execute().get() != null);
         } catch (InterruptedException | ExecutionException e) {
@@ -56,15 +54,6 @@ public class DatabaseSingleton {
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
             return false;
-        }
-    }
-
-    public User getUser(String username, String password) {
-        try {
-            return (new UserLoginAsync(username, password, db).execute().get());
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            return null;
         }
     }
 
@@ -110,15 +99,6 @@ public class DatabaseSingleton {
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
             return false;
-        }
-    }
-
-    public int getPasswordCount(User user) {
-        try {
-            return new GetPasswordCountAsync(user.getUsername(), db).execute().get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            return 0;
         }
     }
 
@@ -182,21 +162,6 @@ public class DatabaseSingleton {
         }
     }
 
-    private static class GetPasswordCountAsync extends AsyncTask<Void, Void, Integer> {
-        private String username;
-        private AppDatabase db;
-
-        GetPasswordCountAsync(String username, AppDatabase db) {
-            this.username = username;
-            this.db = db;
-        }
-
-        @Override
-        protected Integer doInBackground(Void... params) {
-            return db.passwordDAO().getPasswordCount(username);
-        }
-    }
-
     private static class GetUserAsync extends AsyncTask<Void, Void, User> {
         private String username;
         private AppDatabase db;
@@ -255,30 +220,6 @@ public class DatabaseSingleton {
         @Override
         protected User doInBackground(Void... params) {
             return db.userDAO().getPrincipalUser();
-        }
-    }
-
-    private static class UserLoginAsync extends AsyncTask<Void, Void, User> {
-        private String username;
-        private String password;
-        private AppDatabase db;
-
-        UserLoginAsync(String username, String password, AppDatabase db) {
-            this.username = username;
-            this.password = password;
-            this.db = db;
-        }
-
-        @Override
-        protected User doInBackground(Void... params) {
-            User user = db.userDAO().findByUsername(username);
-            if(user == null)
-                return null;
-
-            if(user.getPassword().equals(password))
-                return user;
-
-            return null;
         }
     }
 

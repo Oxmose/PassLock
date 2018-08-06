@@ -9,12 +9,12 @@ public class ListPasswordRowItem {
         PASSWORD, PIN, DIGICODE
     }
 
-    String title;
-    String value;
+    private String title;
+    private String value;
 
-    ITEM_TYPE type;
+    private ITEM_TYPE type;
 
-    int id;
+    private int id;
 
     public ListPasswordRowItem(String title, String value, ITEM_TYPE type, int id) {
         this.title = title;

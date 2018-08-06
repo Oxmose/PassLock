@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.KeyguardManager;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.fingerprint.FingerprintManager;
@@ -40,7 +41,6 @@ import javax.crypto.spec.IvParameterSpec;
 
 import io.github.oxmose.passlock.R;
 
-import static android.content.Context.FINGERPRINT_SERVICE;
 import static android.content.Context.KEYGUARD_SERVICE;
 
 public class FingerPrintAuthHelper {
@@ -50,14 +50,10 @@ public class FingerPrintAuthHelper {
     private static final String LAST_USED_IV_SHARED_PREF_KEY = "LAST_USED_IV_SHARED_PREF_KEY";
     private static final String PASSLOCK_ALIAS = "PASSLOCK_ALIAS";
 
-    private KeyguardManager keyguardManager;
     private FingerprintManager fingerprintManager;
 
     private final Activity context;
     private KeyStore keyStore;
-    private KeyGenerator keyGenerator;
-
-    private String lastError;
 
     private TextView errorLabel;
 
@@ -82,10 +78,10 @@ public class FingerPrintAuthHelper {
             return false;
         }
 
-        keyguardManager = (KeyguardManager) context.getSystemService(KEYGUARD_SERVICE);
-        fingerprintManager = (FingerprintManager) context.getSystemService(FINGERPRINT_SERVICE);
+        KeyguardManager keyguardManager = (KeyguardManager) context.getSystemService(KEYGUARD_SERVICE);
+        fingerprintManager = (FingerprintManager) context.getSystemService(Context.FINGERPRINT_SERVICE);
 
-        if (!keyguardManager.isKeyguardSecure()) {
+        if (keyguardManager != null && !keyguardManager.isKeyguardSecure()) {
             errorLabel.setText(context.getString(R.string.enable_lockscreen));
             return false;
         }
@@ -143,7 +139,7 @@ public class FingerPrintAuthHelper {
     private boolean initKeyStore() {
         try {
             keyStore = KeyStore.getInstance("AndroidKeyStore");
-            keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore");
+            KeyGenerator keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore");
             keyStore.load(null);
             if (getLastIv() == null) {
                 KeyGenParameterSpec keyGeneratorSpec = createKeyGenParameterSpec();
@@ -162,7 +158,10 @@ public class FingerPrintAuthHelper {
         try {
             if (hasPermission()) {
                 Cipher cipher = createCipher(mode);
-                FingerprintManager.CryptoObject crypto = new FingerprintManager.CryptoObject(cipher);
+                FingerprintManager.CryptoObject crypto = null;
+                if (cipher != null) {
+                    crypto = new FingerprintManager.CryptoObject(cipher);
+                }
                 fingerprintManager.authenticate(crypto, cancellationSignal, 0, authListener, null);
             } else {
                 authListener.getCallback().onFailure(context.getString(R.string.fingerprint_permission_missing));
@@ -183,7 +182,7 @@ public class FingerPrintAuthHelper {
     private void saveEncryptedPassword(String encryptedPassword) {
         SharedPreferences.Editor edit = getSharedPreferences().edit();
         edit.putString(ENCRYPTED_PASS_SHARED_PREF_KEY, encryptedPassword);
-        edit.commit();
+        edit.apply();
     }
 
     private byte[] getLastIv() {
@@ -202,7 +201,7 @@ public class FingerPrintAuthHelper {
         SharedPreferences.Editor edit = getSharedPreferences().edit();
         String string = encodeBytes(iv);
         edit.putString(LAST_USED_IV_SHARED_PREF_KEY, string);
-        edit.commit();
+        edit.apply();
     }
 
     private SharedPreferences getSharedPreferences() {
@@ -225,7 +224,7 @@ public class FingerPrintAuthHelper {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public boolean encryptPassword(Cipher cipher, String password) {
+    private boolean encryptPassword(Cipher cipher, String password) {
         try {
             // Encrypt the text
             if(password.isEmpty()) {
@@ -283,7 +282,7 @@ public class FingerPrintAuthHelper {
 
     private static final char[] hexCode = "0123456789ABCDEF".toCharArray();
 
-    public String encodeBytes(byte[] data) {
+    private String encodeBytes(byte[] data) {
         StringBuilder r = new StringBuilder(data.length*2);
         for ( byte b : data) {
             r.append(hexCode[(b >> 4) & 0xF]);
@@ -294,7 +293,7 @@ public class FingerPrintAuthHelper {
 
     @NonNull
     private String decipher(Cipher cipher) throws IOException {
-        String retVal = null;
+        String retVal = "";
         String savedEncryptedPassword = getSavedEncryptedPassword();
         if (savedEncryptedPassword != null) {
             byte[] decodedPassword = decodeBytes(savedEncryptedPassword);
@@ -309,7 +308,7 @@ public class FingerPrintAuthHelper {
 
             byte[] bytes = new byte[values.size()];
             for (int i = 0; i < values.size(); i++) {
-                bytes[i] = values.get(i).byteValue();
+                bytes[i] = values.get(i);
             }
 
             retVal = new String(bytes, Charset.defaultCharset());
@@ -318,16 +317,15 @@ public class FingerPrintAuthHelper {
     }
 
     private void setError(String error) {
-        lastError = error;
-        Log.w(FINGER_PRINT_HELPER, lastError);
+        Log.w(FINGER_PRINT_HELPER, error);
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
     protected class FingerPrintAuthenticationListener extends FingerprintManager.AuthenticationCallback {
 
-        protected final Callback callback;
+        final Callback callback;
 
-        public FingerPrintAuthenticationListener(@NonNull Callback callback) {
+        FingerPrintAuthenticationListener(@NonNull Callback callback) {
             this.callback = callback;
         }
 
@@ -362,7 +360,7 @@ public class FingerPrintAuthHelper {
             callback.onFailure("Authentication failed");
         }
 
-        public @NonNull
+        @NonNull
         Callback getCallback() {
             return callback;
         }
@@ -374,7 +372,7 @@ public class FingerPrintAuthHelper {
 
         private final String password;
 
-        public FingerPrintEncryptPasswordListener(Callback callback, String password) {
+        FingerPrintEncryptPasswordListener(Callback callback, String password) {
             super(callback);
             this.password = password;
         }
@@ -397,7 +395,7 @@ public class FingerPrintAuthHelper {
     @RequiresApi(Build.VERSION_CODES.M)
     protected class FingerPrintDecryptPasswordListener extends FingerPrintAuthenticationListener {
 
-        public FingerPrintDecryptPasswordListener(@NonNull Callback callback) {
+        FingerPrintDecryptPasswordListener(@NonNull Callback callback) {
             super(callback);
         }
 
@@ -405,11 +403,7 @@ public class FingerPrintAuthHelper {
             Cipher cipher = result.getCryptoObject().getCipher();
             try {
                 String savedPass = decipher(cipher);
-                if (savedPass != null) {
-                    callback.onSuccess(savedPass);
-                } else {
-                    callback.onFailure("Failed deciphering");
-                }
+                callback.onSuccess(savedPass);
 
             } catch (Exception e) {
                 callback.onFailure("Deciphering failed " + e.getMessage());
