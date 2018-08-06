@@ -4,6 +4,7 @@ public class ListPasswordRowItem {
 
 
 
+
     public enum ITEM_TYPE {
         PASSWORD, PIN, DIGICODE
     }
@@ -13,10 +14,13 @@ public class ListPasswordRowItem {
 
     ITEM_TYPE type;
 
-    public ListPasswordRowItem(String title, String value, ITEM_TYPE type) {
+    int id;
+
+    public ListPasswordRowItem(String title, String value, ITEM_TYPE type, int id) {
         this.title = title;
         this.value = value;
-        this.type=type;
+        this.type = type;
+        this.id = id;
     }
 
     public String getTitle() {
@@ -30,6 +34,8 @@ public class ListPasswordRowItem {
     public ITEM_TYPE getType() {
         return type;
     }
+
+    public int getId() { return this.id; }
 
     public void setType(ITEM_TYPE type) {
         this.type = type;

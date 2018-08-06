@@ -1,6 +1,7 @@
 package io.github.oxmose.passlock.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -20,6 +21,9 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.oxmose.passlock.LoginActivity;
+import io.github.oxmose.passlock.MainActivity;
+import io.github.oxmose.passlock.PasswordViewActivity;
 import io.github.oxmose.passlock.R;
 import io.github.oxmose.passlock.adapters.ListPasswordRowAdapter;
 import io.github.oxmose.passlock.data.Session;
@@ -80,7 +84,12 @@ public class SearchFragment extends Fragment {
         searchPasswordListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ListPasswordRowItem item = (ListPasswordRowItem)parent.getItemAtPosition(position);
 
+                /* Launch password view activity */
+                Intent i = new Intent(getContext(), PasswordViewActivity.class);
+                i.putExtra("passwordId", item.getId());
+                startActivity(i);
             }
         });
 
@@ -149,7 +158,7 @@ public class SearchFragment extends Fragment {
                     type = ListPasswordRowItem.ITEM_TYPE.PASSWORD;
                 }
 
-                ListPasswordRowItem newItem = new ListPasswordRowItem(title, value, type);
+                ListPasswordRowItem newItem = new ListPasswordRowItem(title, value, type, password.getId());
                 listItems.add(newItem);
             }
 

@@ -42,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
         /* TODO REMOVE FOR DEV PURPOSE ONLY */
-        if(false) {
+        if(true) {
             User loggedUser = checkLogin("Oxmose", "oxmose");
             if (loggedUser != null) {
                 /* We logged in */

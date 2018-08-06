@@ -1,5 +1,6 @@
 package io.github.oxmose.passlock.data;
 
+import io.github.oxmose.passlock.database.Password;
 import io.github.oxmose.passlock.database.User;
 
 public class Session {

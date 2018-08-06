@@ -134,6 +134,30 @@ public class DatabaseSingleton {
         return db.passwordDAO().getUserPassordsLike(user.getUsername(), "%" + text + "%");
     }
 
+    public Password getPasswordById(int id) {
+        try {
+            return new GetPasswordByIdAsync(id, db).execute().get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private static class GetPasswordByIdAsync extends AsyncTask<Void, Void, Password> {
+        private int id;
+        private AppDatabase db;
+
+        GetPasswordByIdAsync(int id, AppDatabase db) {
+            this.id = id;
+            this.db = db;
+        }
+
+        @Override
+        protected Password doInBackground(Void... params) {
+            return db.passwordDAO().findById(id);
+        }
+    }
+
     private static class GetPasswordCountAsync extends AsyncTask<Void, Void, Integer> {
         private String username;
         private AppDatabase db;
