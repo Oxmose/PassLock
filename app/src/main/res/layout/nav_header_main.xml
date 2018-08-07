@@ -20,13 +20,14 @@
         android:src="@drawable/bg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/placeholder" />
 
     <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/nav_header_main_circularimageview"
         android:layout_width="65dp"
         android:layout_height="65dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="32dp"
         android:src="@drawable/ic_account_circle"
         app:civ_border_color="#333333"
@@ -66,7 +67,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="120dp"
         android:layout_marginTop="40dp"
-        android:text="88"
+        android:text="@string/_88"
         android:textAlignment="center"
         android:textColor="?attr/colorPrimary"
         android:textSize="30sp"
@@ -81,7 +82,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
         android:layout_marginTop="76dp"
-        android:text="Passwords stored"
+        android:text="@string/passwords_stored"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

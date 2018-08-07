@@ -1,8 +1,6 @@
 package io.github.oxmose.passlock;
 
 import android.app.Dialog;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +15,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Objects;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -25,7 +24,6 @@ import javax.crypto.NoSuchPaddingException;
 import io.github.oxmose.passlock.data.Session;
 import io.github.oxmose.passlock.database.DatabaseSingleton;
 import io.github.oxmose.passlock.database.Password;
-import io.github.oxmose.passlock.database.User;
 import io.github.oxmose.passlock.tools.AESEncrypt;
 
 public class EditDialog extends Dialog implements
@@ -49,13 +47,8 @@ public class EditDialog extends Dialog implements
 
     private Password currentPassword;
 
-    public EditDialog(PasswordViewActivity activity) {
-        super(activity);
-        this.activity = activity;
 
-    }
-
-    public EditDialog(PasswordViewActivity activity, int style) {
+    EditDialog(PasswordViewActivity activity, int style) {
         super(activity, style);
         this.activity = activity;
 
@@ -66,7 +59,9 @@ public class EditDialog extends Dialog implements
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.fragment_add_password);
-        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        Objects.requireNonNull(getWindow())
+                .setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+                           ViewGroup.LayoutParams.MATCH_PARENT);
         setCancelable(true);
         setCanceledOnTouchOutside(true);
 
@@ -114,8 +109,6 @@ public class EditDialog extends Dialog implements
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                DatabaseSingleton db = DatabaseSingleton.getInstance();
 
                 String passwordName = passwordNameEditText.getText().toString();
                 String passwordValue = passwordValueEditText.getText().toString();
@@ -191,7 +184,7 @@ public class EditDialog extends Dialog implements
 
     }
     
-    public void exitDialog() {
+    private void exitDialog() {
         activity.setCurrentPassword(currentPassword);
         activity.updatePasswordView();
 

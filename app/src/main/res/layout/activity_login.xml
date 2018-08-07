@@ -22,7 +22,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/header" />
+            app:srcCompat="@drawable/header"
+            android:contentDescription="@string/user_avatar" />
 
         <com.mikhaellopez.circularimageview.CircularImageView
             android:id="@+id/activity_login_last_connection_imageview"
@@ -167,7 +168,8 @@
             android:text="@string/u_create_account_u"
             android:textStyle="italic"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/activity_login_login_button" />
+            app:layout_constraintTop_toBottomOf="@+id/activity_login_login_button"
+            android:focusable="true" />
 
 
     </android.support.constraint.ConstraintLayout>

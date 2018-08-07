@@ -7,37 +7,41 @@
         <item
             android:id="@+id/nav_search"
             android:icon="@drawable/ic_search"
-            android:title="Search" />
+            android:title="@string/search" />
         <item
             android:id="@+id/nav_add"
             android:icon="@drawable/ic_add_circle_outline"
-            android:title="Add a password" />
+            android:title="@string/add_a_password" />
     </group>
 
     <group android:checkableBehavior="none" android:id="@+id/menu_middle">
         <item
+            android:id="@+id/nav_favorites"
+            android:icon="@drawable/ic_favorite_border"
+            android:title="@string/favorites" />
+        <item
             android:id="@+id/nav_passwords"
             android:icon="@drawable/ic_lock_outline"
-            android:title="Passwords" />
+            android:title="@string/passwords" />
         <item
             android:id="@+id/nav_pins"
             android:icon="@drawable/ic_credit_card"
-            android:title="Pins" />
+            android:title="@string/pins" />
         <item
             android:id="@+id/nav_digicodes"
             android:icon="@drawable/ic_dialpad"
-            android:title="Digicodes" />
+            android:title="@string/digicodes" />
     </group>
 
     <group android:checkableBehavior="none" android:id="@+id/menu_bottom">
         <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_settings"
-            android:title="Settings" />
+            android:title="@string/settings" />
         <item
             android:id="@+id/nav_logout"
             android:icon="@drawable/ic_exit_to_app"
-            android:title="Logout" />
+            android:title="@string/logout" />
     </group>
 
 </menu>

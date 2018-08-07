@@ -1,16 +1,12 @@
 package io.github.oxmose.passlock;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
-import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -95,11 +91,11 @@ public class PasswordViewActivity extends AppCompatActivity {
         String note = password.getNote();
 
         if(account.isEmpty())
-            passwordAccount.setText("None");
+            passwordAccount.setText(R.string.none);
         else
             passwordAccount.setText(password.getAssociatedAccount());
         if(note.isEmpty())
-            passwordNote.setText("None");
+            passwordNote.setText(R.string.none);
         else
             passwordNote.setText(password.getNote());
 
@@ -254,25 +250,27 @@ public class PasswordViewActivity extends AppCompatActivity {
             String colors[] = new String[2];
             colors[0] = "#3F51B5";
             colors[1] = "#FF5722";
+            StringBuilder builder = new StringBuilder();
 
-            String finalStr = "<font color='" + colors[lastColor] + "'>";
+            builder.append("<font color='").append(colors[lastColor]).append("'>");
 
             for(int i = 0; i < decryptedPassword.length(); ++i) {
                 boolean isDigit =  Character.isDigit(decryptedPassword.charAt(i));
                 if(lastColor == 0 && isDigit) {
                     lastColor = 1;
-                    finalStr += "</font>" + "<font color='" + colors[lastColor] + "'>";
+
+                    builder.append("</font>" + "<font color='").append(colors[lastColor]).append("'>");
                 }
                 else if (lastColor == 1 && !isDigit){
                     lastColor = 0;
-                    finalStr += "</font>" + "<font color='" + colors[lastColor] + "'>";
+                    builder.append("</font>" + "<font color='").append(colors[lastColor]).append("'>");
                 }
 
-                finalStr += decryptedPassword.charAt(i);
+                builder.append(decryptedPassword.charAt(i));
             }
 
-            finalStr += "</font>";
-            return finalStr;
+            builder.append("</font>");
+            return builder.toString();
         }
     }
 }
