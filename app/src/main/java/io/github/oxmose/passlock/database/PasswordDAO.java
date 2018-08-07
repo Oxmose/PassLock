@@ -30,4 +30,7 @@ public interface PasswordDAO {
 
     @Query("SELECT * FROM password WHERE user = (:username) AND name LIKE (:text)")
     List<Password> getUserPassordsLike(String username, String text);
+
+    @Query("SELECT * FROM password WHERE user = (:username) AND name LIKE (:text) AND is_favorite = 1")
+    List<Password> getUserFavoritePassordsLike(String username, String text);
 }

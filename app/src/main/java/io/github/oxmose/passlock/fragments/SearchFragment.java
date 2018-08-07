@@ -31,6 +31,10 @@ import io.github.oxmose.passlock.tools.ApplicationContextProvider;
 
 public class SearchFragment extends Fragment {
 
+    public enum SEARCH_FRAGMENT_VIEW {
+        SEARCH_VIEW, FAVORITE_VIEW
+    }
+
     private TextView infoTextView;
     private ListView searchPasswordListview;
     private MaterialSearchBar searchBar;
@@ -38,8 +42,16 @@ public class SearchFragment extends Fragment {
     private List<ListPasswordRowItem> listItems = null;
     private ListPasswordRowAdapter listAdapter;
 
+    private SEARCH_FRAGMENT_VIEW curerntView;
+
     public SearchFragment() {
         // Required empty public constructor
+        this.curerntView = SEARCH_FRAGMENT_VIEW.SEARCH_VIEW;
+    }
+
+    public SearchFragment(SEARCH_FRAGMENT_VIEW curerntView) {
+        // Required empty public constructor
+        this.curerntView = curerntView;
     }
 
     @Override
@@ -72,7 +84,7 @@ public class SearchFragment extends Fragment {
             listItems = new ArrayList<>();
         }
 
-        listAdapter = new ListPasswordRowAdapter(listItems, ApplicationContextProvider.getContext());
+        listAdapter = new ListPasswordRowAdapter(listItems, this);
 
         searchPasswordListview.setAdapter(listAdapter);
         searchPasswordListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -140,7 +152,12 @@ public class SearchFragment extends Fragment {
             DatabaseSingleton db = DatabaseSingleton.getInstance();
             User user = Session.getInstance().getCurrentUser();
 
-            List<Password> passwordsList = db.getUserPasswordsNonAsync(user, fragment.searchBar.getText());
+            List<Password> passwordsList = new ArrayList<>();
+
+            if(fragment.curerntView == SearchFragment.SEARCH_FRAGMENT_VIEW.SEARCH_VIEW)
+                passwordsList = db.getUserPasswordsNonAsync(user, fragment.searchBar.getText());
+            else if(fragment.curerntView == SearchFragment.SEARCH_FRAGMENT_VIEW.FAVORITE_VIEW)
+                passwordsList = db.getUserFavoritePasswordsNonAsync(user, fragment.searchBar.getText());
 
             for(Password password: passwordsList) {
                 String title = password.getName();
@@ -184,9 +201,10 @@ public class SearchFragment extends Fragment {
                 fragment.infoTextView.setVisibility(View.VISIBLE);
             }
             else {
-                fragment.listAdapter.notifyDataSetChanged();
                 fragment.infoTextView.setVisibility(View.INVISIBLE);
             }
+            fragment.listAdapter.notifyDataSetChanged();
+
         }
     }
 
@@ -200,6 +218,10 @@ public class SearchFragment extends Fragment {
         infoTextView.setText(R.string.searching);
         infoTextView.setVisibility(View.VISIBLE);
 
+        new StartSearchAsync(this).execute();
+    }
+
+    public void updateList() {
         new StartSearchAsync(this).execute();
     }
 }

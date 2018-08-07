@@ -187,20 +187,27 @@ public class MainActivity extends AppCompatActivity
 
 
         if (id == R.id.nav_search) {
-            // Replace the contents of the container with the new fragment
-            ft.replace(R.id.activity_main_fragment_placeholder, new SearchFragment());
-        } else if (id == R.id.nav_add) {
-            // Replace the contents of the container with the new fragment
+            ft.replace(R.id.activity_main_fragment_placeholder, new SearchFragment(SearchFragment.SEARCH_FRAGMENT_VIEW.SEARCH_VIEW));
+        }
+        else if (id == R.id.nav_add) {
             ft.replace(R.id.activity_main_fragment_placeholder, new AddPasswordFragment());
-        } else if (id == R.id.nav_passwords) {
+        }
+        else if (id == R.id.nav_favorites) {
+            ft.replace(R.id.activity_main_fragment_placeholder, new SearchFragment(SearchFragment.SEARCH_FRAGMENT_VIEW.FAVORITE_VIEW));
+        }
+        else if (id == R.id.nav_passwords) {
 
-        } else if (id == R.id.nav_pins) {
+        }
+        else if (id == R.id.nav_pins) {
 
-        } else if (id == R.id.nav_digicodes) {
+        }
+        else if (id == R.id.nav_digicodes) {
 
-        } else if (id == R.id.nav_settings) {
+        }
+        else if (id == R.id.nav_settings) {
 
-        } else if (id == R.id.nav_logout) {
+        }
+        else if (id == R.id.nav_logout) {
 
             logout();
 

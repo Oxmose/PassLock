@@ -141,6 +141,10 @@ public class DatabaseSingleton {
         }
     }
 
+    public List<Password> getUserFavoritePasswordsNonAsync(User user, String text) {
+        return db.passwordDAO().getUserFavoritePassordsLike(user.getUsername(), "%" + text + "%");
+    }
+
     private static class EditPasswordAsync extends AsyncTask<Void, Void, Void> {
         private Password password;
         private AppDatabase db;

@@ -1,29 +1,28 @@
 package io.github.oxmose.passlock.adapters;
 
-import android.content.Context;
-
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.Objects;
 
 import io.github.oxmose.passlock.R;
 import io.github.oxmose.passlock.database.DatabaseSingleton;
 import io.github.oxmose.passlock.database.Password;
+import io.github.oxmose.passlock.fragments.SearchFragment;
 import io.github.oxmose.passlock.model.ListPasswordRowItem;
 
 public class ListPasswordRowAdapter extends ArrayAdapter<ListPasswordRowItem>
                                     implements View.OnClickListener{
 
     /* List context */
-    private Context mContext;
+    private SearchFragment mContext;
 
 
     private static class ViewHolder {
@@ -33,8 +32,8 @@ public class ListPasswordRowAdapter extends ArrayAdapter<ListPasswordRowItem>
         ImageView faveIcon;
     }
 
-    public ListPasswordRowAdapter(List<ListPasswordRowItem> data, Context context) {
-        super(context, R.layout.password_item_row, data);
+    public ListPasswordRowAdapter(List<ListPasswordRowItem> data, SearchFragment context) {
+        super(Objects.requireNonNull(context.getContext()), R.layout.password_item_row, data);
         this.mContext = context;
     }
 
@@ -106,6 +105,8 @@ public class ListPasswordRowAdapter extends ArrayAdapter<ListPasswordRowItem>
                                 null, null));
             }
 
+
+
             viewHolder.faveIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -123,6 +124,8 @@ public class ListPasswordRowAdapter extends ArrayAdapter<ListPasswordRowItem>
                                 .getIdentifier("io.github.oxmose.passlock:drawable/ic_favorite",
                                         null, null));
                     }
+
+                    mContext.updateList();
                 }
             });
         }
