@@ -111,7 +111,7 @@ public class DatabaseSingleton {
     }
 
     public List<Password> getUserPasswordsNonAsync(User user, String text) {
-        return db.passwordDAO().getUserPassordsLike(user.getUsername(), "%" + text + "%");
+        return db.passwordDAO().getUserPasswordsLike(user.getUsername(), "%" + text + "%");
     }
 
     public Password getPasswordById(int id) {
@@ -142,7 +142,19 @@ public class DatabaseSingleton {
     }
 
     public List<Password> getUserFavoritePasswordsNonAsync(User user, String text) {
-        return db.passwordDAO().getUserFavoritePassordsLike(user.getUsername(), "%" + text + "%");
+        return db.passwordDAO().getUserFavoritePasswordsLike(user.getUsername(), "%" + text + "%");
+    }
+
+    public List<Password> getUserPasswordPasswordsNonAsync(User user, String text) {
+        return db.passwordDAO().getUserPasswordPasswordsLike(user.getUsername(), "%" + text + "%");
+    }
+
+    public List<Password> getUserPinPasswordsNonAsync(User user, String text) {
+        return db.passwordDAO().getUserPinPasswordsLike(user.getUsername(), "%" + text + "%");
+    }
+
+    public List<Password> getUserDigicodePasswordsNonAsync(User user, String text) {
+        return db.passwordDAO().getUserDigicodePasswordsLike(user.getUsername(), "%" + text + "%");
     }
 
     private static class EditPasswordAsync extends AsyncTask<Void, Void, Void> {

@@ -29,8 +29,17 @@ public interface PasswordDAO {
     Password getUserPassword(String username, String passwordName);
 
     @Query("SELECT * FROM password WHERE user = (:username) AND name LIKE (:text)")
-    List<Password> getUserPassordsLike(String username, String text);
+    List<Password> getUserPasswordsLike(String username, String text);
 
     @Query("SELECT * FROM password WHERE user = (:username) AND name LIKE (:text) AND is_favorite = 1")
-    List<Password> getUserFavoritePassordsLike(String username, String text);
+    List<Password> getUserFavoritePasswordsLike(String username, String text);
+
+    @Query("SELECT * FROM password WHERE user = (:username) AND name LIKE (:text) AND cat_password = 1")
+    List<Password> getUserPasswordPasswordsLike(String username, String text);
+
+    @Query("SELECT * FROM password WHERE user = (:username) AND name LIKE (:text) AND cat_pin = 1")
+    List<Password> getUserPinPasswordsLike(String username, String text);
+
+    @Query("SELECT * FROM password WHERE user = (:username) AND name LIKE (:text) AND cat_digicode = 1")
+    List<Password> getUserDigicodePasswordsLike(String username, String text);
 }

@@ -196,13 +196,13 @@ public class MainActivity extends AppCompatActivity
             ft.replace(R.id.activity_main_fragment_placeholder, new SearchFragment(SearchFragment.SEARCH_FRAGMENT_VIEW.FAVORITE_VIEW));
         }
         else if (id == R.id.nav_passwords) {
-
+            ft.replace(R.id.activity_main_fragment_placeholder, new SearchFragment(SearchFragment.SEARCH_FRAGMENT_VIEW.PASSWORD_VIEW));
         }
         else if (id == R.id.nav_pins) {
-
+            ft.replace(R.id.activity_main_fragment_placeholder, new SearchFragment(SearchFragment.SEARCH_FRAGMENT_VIEW.PIN_VIEW));
         }
         else if (id == R.id.nav_digicodes) {
-
+            ft.replace(R.id.activity_main_fragment_placeholder, new SearchFragment(SearchFragment.SEARCH_FRAGMENT_VIEW.DIGICODE_VIEW));
         }
         else if (id == R.id.nav_settings) {
 

@@ -32,7 +32,7 @@ import io.github.oxmose.passlock.tools.ApplicationContextProvider;
 public class SearchFragment extends Fragment {
 
     public enum SEARCH_FRAGMENT_VIEW {
-        SEARCH_VIEW, FAVORITE_VIEW
+        SEARCH_VIEW, FAVORITE_VIEW, PASSWORD_VIEW, PIN_VIEW, DIGICODE_VIEW
     }
 
     private TextView infoTextView;
@@ -158,6 +158,12 @@ public class SearchFragment extends Fragment {
                 passwordsList = db.getUserPasswordsNonAsync(user, fragment.searchBar.getText());
             else if(fragment.curerntView == SearchFragment.SEARCH_FRAGMENT_VIEW.FAVORITE_VIEW)
                 passwordsList = db.getUserFavoritePasswordsNonAsync(user, fragment.searchBar.getText());
+            else if(fragment.curerntView == SearchFragment.SEARCH_FRAGMENT_VIEW.PASSWORD_VIEW)
+                passwordsList = db.getUserPasswordPasswordsNonAsync(user, fragment.searchBar.getText());
+            else if(fragment.curerntView == SearchFragment.SEARCH_FRAGMENT_VIEW.PIN_VIEW)
+                passwordsList = db.getUserPinPasswordsNonAsync(user, fragment.searchBar.getText());
+            else if(fragment.curerntView == SearchFragment.SEARCH_FRAGMENT_VIEW.DIGICODE_VIEW)
+                passwordsList = db.getUserDigicodePasswordsNonAsync(user, fragment.searchBar.getText());
 
             for(Password password: passwordsList) {
                 String title = password.getName();
