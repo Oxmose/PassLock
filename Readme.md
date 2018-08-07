@@ -13,3 +13,7 @@ Here is the current last build status for the main two branches:
 | Codacy | [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a6a22e3c53e74d388582c64d57ee9c16)](https://www.codacy.com/app/Oxmose/PassLock?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Oxmose/PassLock&amp;utm_campaign=Badge_Grade)| N/A |
 
 ## Screenshots
+![Login screen](/Screenshots/Screenshot_2018-08-06-21-15-13.png)
+![Drawer](/Screenshots/Screenshot_2018-08-06-21-19-17.png)
+![Search page](/Screenshots/Screenshot_2018-08-06-21-19-20.png)
+![Password page](/Screenshots/Screenshot_2018-08-06-21-19-25.png)
