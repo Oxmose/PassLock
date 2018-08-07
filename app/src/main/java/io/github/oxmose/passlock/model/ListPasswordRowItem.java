@@ -16,11 +16,14 @@ public class ListPasswordRowItem {
 
     private int id;
 
-    public ListPasswordRowItem(String title, String value, ITEM_TYPE type, int id) {
+    private boolean isFavorite;
+
+    public ListPasswordRowItem(String title, String value, ITEM_TYPE type, int id, boolean isFavorite) {
         this.title = title;
         this.value = value;
         this.type = type;
         this.id = id;
+        this.isFavorite = isFavorite;
     }
 
     public String getTitle() {
@@ -39,5 +42,13 @@ public class ListPasswordRowItem {
 
     public void setType(ITEM_TYPE type) {
         this.type = type;
+    }
+
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
     }
 }

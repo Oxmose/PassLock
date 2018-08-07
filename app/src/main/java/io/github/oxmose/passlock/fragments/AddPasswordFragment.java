@@ -170,7 +170,8 @@ public class AddPasswordFragment extends Fragment {
                                             passwordNoteEditText.getText().toString(),
                                             passwordCatRadioButton.isChecked(),
                                             pinCatRadioButton.isChecked(),
-                                            digicodeCatRadioButton.isChecked()
+                                            digicodeCatRadioButton.isChecked(),
+                                            false
                                             );
 
         return db.createPassword(newPassword);

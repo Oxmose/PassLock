@@ -160,7 +160,11 @@ public class SearchFragment extends Fragment {
                     type = ListPasswordRowItem.ITEM_TYPE.PASSWORD;
                 }
 
-                ListPasswordRowItem newItem = new ListPasswordRowItem(title, value, type, password.getId());
+                ListPasswordRowItem newItem = new ListPasswordRowItem(title,
+                                                                      value,
+                                                                      type,
+                                                                      password.getId(),
+                                                                      password.isFavorite());
                 fragment.listItems.add(newItem);
             }
 

@@ -41,8 +41,11 @@ public class Password {
     @ColumnInfo(name = "associated_account")
     private String associatedAccount;
 
+    @ColumnInfo(name = "is_favorite")
+    private boolean isFavorite;
+
     public Password(String name, String value, String username, String associatedAccount, String note,
-                    boolean isPassword, boolean isPin, boolean isDigicode) {
+                    boolean isPassword, boolean isPin, boolean isDigicode, boolean isFavorite) {
         this.name = name;
         this.value = value;
         this.user = username;
@@ -51,6 +54,7 @@ public class Password {
         this.isDigicode = isDigicode;
         this.note = note;
         this.associatedAccount = associatedAccount;
+        this.isFavorite = isFavorite;
     }
 
     public Password() {}
@@ -125,5 +129,13 @@ public class Password {
 
     public void setAssociatedAccount(String associatedAccount) {
         this.associatedAccount = associatedAccount;
+    }
+
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
     }
 }
