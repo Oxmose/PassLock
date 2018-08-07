@@ -35,6 +35,8 @@ public class AddPasswordFragment extends Fragment {
 
     private EditText passwordNameEditText;
     private EditText passwordValueEditText;
+    private EditText passwordAccountEditText;
+    private EditText passwordNoteEditText;
 
     private RadioButton passwordCatRadioButton;
     private RadioButton pinCatRadioButton;
@@ -61,6 +63,8 @@ public class AddPasswordFragment extends Fragment {
 
         passwordNameEditText = view.findViewById(R.id.fragment_add_password_name_edittext);
         passwordValueEditText = view.findViewById(R.id.fragment_add_password_value_edittext);
+        passwordAccountEditText = view.findViewById(R.id.fragment_add_password_account_edittext);
+        passwordNoteEditText = view.findViewById(R.id.fragment_add_password_note_edittext);
 
         passwordCatRadioButton = view.findViewById(R.id.fragment_add_password_password_cat);
         pinCatRadioButton = view.findViewById(R.id.fragment_add_password_pin_cat);
@@ -79,6 +83,8 @@ public class AddPasswordFragment extends Fragment {
                 passwordCatRadioButton.setChecked(true);
                 passwordNameEditText.setText("");
                 passwordValueEditText.setText("");
+                passwordAccountEditText.setText("");
+                passwordNoteEditText.setText("");
 
                 passwordNameEditText.setError(null);
                 passwordValueEditText.setError(null);
@@ -160,9 +166,12 @@ public class AddPasswordFragment extends Fragment {
         /* Create password and save it */
         Password newPassword = new Password(passwordName, passwordValue,
                                             session.getCurrentUser().getUsername(),
+                                            passwordAccountEditText.getText().toString(),
+                                            passwordNoteEditText.getText().toString(),
                                             passwordCatRadioButton.isChecked(),
                                             pinCatRadioButton.isChecked(),
-                                            digicodeCatRadioButton.isChecked());
+                                            digicodeCatRadioButton.isChecked()
+                                            );
 
         return db.createPassword(newPassword);
     }

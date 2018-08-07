@@ -5,6 +5,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -35,7 +37,8 @@ public class PasswordViewActivity extends AppCompatActivity {
     private ImageView passwordIcon;
 
     private TextView passwordValue;
-    private TextView passwordType;
+    private TextView passwordNote;
+    private TextView passwordAccount;
 
     private Button editButton;
     private Button deleteButton;
@@ -55,7 +58,8 @@ public class PasswordViewActivity extends AppCompatActivity {
         passwordTitle = findViewById(R.id.activity_password_view_title_textview);
         passwordIcon = findViewById(R.id.activity_password_view_icon_imageview);
         passwordValue = findViewById(R.id.activity_password_view_value_textview);
-        passwordType = findViewById(R.id.activity_password_view_type_textview);
+        passwordAccount = findViewById(R.id.activity_password_view_account_textview);
+        passwordNote = findViewById(R.id.activity_password_view_note_textview);
         editButton = findViewById(R.id.activity_password_view_edit_button);
         deleteButton = findViewById(R.id.activity_password_view_delete_button);
         toolbar = findViewById(R.id.activity_password_view_toolbar);
@@ -83,27 +87,36 @@ public class PasswordViewActivity extends AppCompatActivity {
         passwordTitle.setText(password.getName());
         passwordValue.setText(R.string.decrypting);
 
+
+        String account = password.getAssociatedAccount();
+        String note = password.getNote();
+
+        if(account.isEmpty())
+            passwordAccount.setText("None");
+        else
+            passwordAccount.setText(password.getAssociatedAccount());
+        if(note.isEmpty())
+            passwordNote.setText("None");
+        else
+            passwordNote.setText(password.getNote());
+
         if(password.isPassword()) {
-            passwordType.setText(R.string.password);
             id = getResources()
                     .getIdentifier("io.github.oxmose.passlock:drawable/ic_lock_outline",
                             null, null);
 
         }
         else if(password.isPin()) {
-            passwordType.setText(R.string.pin);
             id = getResources()
                     .getIdentifier("io.github.oxmose.passlock:drawable/ic_credit_card",
                             null, null);
         }
         else if(password.isDigicode()) {
-            passwordType.setText(R.string.digicode);
             id = getResources()
                     .getIdentifier("io.github.oxmose.passlock:drawable/ic_dialpad",
                             null, null);
         }
         else {
-            passwordType.setText(R.string.password);
             id = getResources()
                     .getIdentifier("io.github.oxmose.passlock:drawable/ic_lock_outline",
                             null, null);
@@ -167,7 +180,35 @@ public class PasswordViewActivity extends AppCompatActivity {
 
             PasswordViewActivity activity = activityRef.get();
 
-            activity.passwordValue.setText(activity.decryptedPassword);
+            String formatedPassword = formatPassword(activity.decryptedPassword);
+
+            activity.passwordValue.setText(Html.fromHtml(formatedPassword));
+        }
+
+        private String formatPassword(String decryptedPassword) {
+            int lastColor = 0;
+            String colors[] = new String[2];
+            colors[0] = "#3F51B5";
+            colors[1] = "#FF5722";
+
+            String finalStr = "<font color='" + colors[lastColor] + "'>";
+
+            for(int i = 0; i < decryptedPassword.length(); ++i) {
+                boolean isDigit =  Character.isDigit(decryptedPassword.charAt(i));
+                if(lastColor == 0 && isDigit) {
+                    lastColor = 1;
+                    finalStr += "</font>" + "<font color='" + colors[lastColor] + "'>";
+                }
+                else if (lastColor == 1 && !isDigit){
+                    lastColor = 0;
+                    finalStr += "</font>" + "<font color='" + colors[lastColor] + "'>";
+                }
+
+                finalStr += decryptedPassword.charAt(i);
+            }
+
+            finalStr += "</font>";
+            return finalStr;
         }
     }
 }

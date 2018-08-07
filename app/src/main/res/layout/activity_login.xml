@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:isScrollContainer="true"
-    tools:context=".LoginActivity">
+    tools:context=".LoginActivity"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"

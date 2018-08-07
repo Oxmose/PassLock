@@ -74,7 +74,9 @@ public class FingerPrintAuthHelper {
     @TargetApi(Build.VERSION_CODES.M)
     public boolean init() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            errorLabel.setText(context.getString(R.string.fingerprint_not_supported_by_version));
+            if(errorLabel != null)
+                errorLabel.setText(context.getString(R.string.fingerprint_not_supported_by_version));
+
             return false;
         }
 
@@ -82,22 +84,26 @@ public class FingerPrintAuthHelper {
         fingerprintManager = (FingerprintManager) context.getSystemService(Context.FINGERPRINT_SERVICE);
 
         if (keyguardManager != null && !keyguardManager.isKeyguardSecure()) {
-            errorLabel.setText(context.getString(R.string.enable_lockscreen));
+            if(errorLabel != null)
+                errorLabel.setText(context.getString(R.string.enable_lockscreen));
             return false;
         }
 
         if (!hasPermission()) {
-            errorLabel.setText(context.getString(R.string.enable_fingerprint));
+            if(errorLabel != null)
+                errorLabel.setText(context.getString(R.string.enable_fingerprint));
             return false;
         }
 
         if (!fingerprintManager.hasEnrolledFingerprints()) {
-            errorLabel.setText(context.getString(R.string.register_fingerprints));
+            if(errorLabel != null)
+                errorLabel.setText(context.getString(R.string.register_fingerprints));
             return false;
         }
 
         if (!initKeyStore()) {
-            errorLabel.setText(context.getString(R.string.fingerprint_not_supported));
+            if(errorLabel != null)
+                errorLabel.setText(context.getString(R.string.fingerprint_not_supported));
             return false;
         }
         return true;

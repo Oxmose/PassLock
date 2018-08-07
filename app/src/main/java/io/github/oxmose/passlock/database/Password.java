@@ -35,7 +35,13 @@ public class Password {
     @ColumnInfo(name = "cat_digicode")
     private boolean isDigicode;
 
-    public Password(String name, String value, String username,
+    @ColumnInfo(name = "note")
+    private String note;
+
+    @ColumnInfo(name = "associated_account")
+    private String associatedAccount;
+
+    public Password(String name, String value, String username, String associatedAccount, String note,
                     boolean isPassword, boolean isPin, boolean isDigicode) {
         this.name = name;
         this.value = value;
@@ -43,6 +49,8 @@ public class Password {
         this.isPassword = isPassword;
         this.isPin = isPin;
         this.isDigicode = isDigicode;
+        this.note = note;
+        this.associatedAccount = associatedAccount;
     }
 
     public Password() {}
@@ -101,5 +109,21 @@ public class Password {
 
     public void setDigicode(boolean digicode) {
         isDigicode = digicode;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public String getAssociatedAccount() {
+        return associatedAccount;
+    }
+
+    public void setAssociatedAccount(String associatedAccount) {
+        this.associatedAccount = associatedAccount;
     }
 }

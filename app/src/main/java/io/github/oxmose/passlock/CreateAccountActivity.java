@@ -97,11 +97,11 @@ public class CreateAccountActivity extends Activity {
         setContentView(R.layout.activity_create_account);
 
         /* Init fingerprint technology */
-        fingerPrintAuthHelper = new FingerPrintAuthHelper(this,
-                (TextView)findViewById(R.id.activity_login_use_finger_textview));
+        fingerPrintAuthHelper = new FingerPrintAuthHelper(this, null);
         if(!fingerPrintAuthHelper.init()) {
             fingerprintsCheckBox.setChecked(false);
             fingerprintsCheckBox.setEnabled(false);
+            fingerprintsCheckBox.setText(R.string.cannot_use_fingerprints);
         }
 
         /* Get activity components */

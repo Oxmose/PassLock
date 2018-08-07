@@ -43,4 +43,5 @@
     <string name="decrypting">Decrypting</string>
     <string name="pin">Pin</string>
     <string name="digicode">Digicode</string>
+    <string name="cannot_use_fingerprints">Cannot use fingerprints</string>
 </resources>
