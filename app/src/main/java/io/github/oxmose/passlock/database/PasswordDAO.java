@@ -4,6 +4,7 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Update;
 
 import java.util.List;
 
@@ -17,6 +18,9 @@ public interface PasswordDAO {
 
     @Delete
     void delete(Password password);
+
+    @Update
+    void update(Password password);
 
     @Query("SELECT COUNT(*) FROM password WHERE user = (:username)")
     int getPasswordCount(String username);

@@ -131,6 +131,32 @@ public class DatabaseSingleton {
         }
     }
 
+    public boolean editPassword(Password currentPassword) {
+        try {
+            new EditPasswordAsync(currentPassword, db).execute().get();
+            return true;
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private static class EditPasswordAsync extends AsyncTask<Void, Void, Void> {
+        private Password password;
+        private AppDatabase db;
+
+        EditPasswordAsync(Password password, AppDatabase db) {
+            this.password = password;
+            this.db = db;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            db.passwordDAO().update(password);
+            return null;
+        }
+    }
+
     private static class DeletePasswordAsync extends AsyncTask<Void, Void, Void> {
         private Password password;
         private AppDatabase db;

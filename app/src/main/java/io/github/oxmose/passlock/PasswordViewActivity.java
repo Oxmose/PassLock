@@ -1,6 +1,8 @@
 package io.github.oxmose.passlock;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -147,8 +150,69 @@ public class PasswordViewActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                EditDialog editDiag = new EditDialog(PasswordViewActivity.this, R.style.dialog_style);
+
+                editDiag.show();
             }
         });
+    }
+
+    public Password getCurrentPassword() {
+        return password;
+    }
+
+    public String getDecryptedPassword() {
+        return decryptedPassword;
+    }
+
+    public void setCurrentPassword(Password currentPassword) {
+        this.password = currentPassword;
+    }
+
+    public void updatePasswordView() {
+        int id;
+
+        passwordTitle.setText(password.getName());
+        passwordValue.setText(R.string.decrypting);
+
+        String account = password.getAssociatedAccount();
+        String note = password.getNote();
+
+        if(account.isEmpty())
+            passwordAccount.setText(R.string.none);
+        else
+            passwordAccount.setText(password.getAssociatedAccount());
+        if(note.isEmpty())
+            passwordNote.setText(R.string.none);
+        else
+            passwordNote.setText(password.getNote());
+
+        if(password.isPassword()) {
+            id = getResources()
+                    .getIdentifier("io.github.oxmose.passlock:drawable/ic_lock_outline",
+                            null, null);
+
+        }
+        else if(password.isPin()) {
+            id = getResources()
+                    .getIdentifier("io.github.oxmose.passlock:drawable/ic_credit_card",
+                            null, null);
+        }
+        else if(password.isDigicode()) {
+            id = getResources()
+                    .getIdentifier("io.github.oxmose.passlock:drawable/ic_dialpad",
+                            null, null);
+        }
+        else {
+            id = getResources()
+                    .getIdentifier("io.github.oxmose.passlock:drawable/ic_lock_outline",
+                            null, null);
+        }
+
+        passwordIcon.setImageResource(id);
+
+        new DecryptPasswordAync(this).execute();
+
     }
 
     private static class DecryptPasswordAync extends AsyncTask<Void, Void, Void> {
